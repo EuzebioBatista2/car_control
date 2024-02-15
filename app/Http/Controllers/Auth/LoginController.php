@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -35,5 +36,25 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function validateLogin(Request $request)
+    {
+        $request->validate(
+            [
+                'email' => 'required|string|exists:admins,email',
+                'password' => 'required'
+            ],
+            [
+                "email.required" => 'O campo email precisa ser preenchido',
+                "password.required" => 'O campo senha precisa ser preenchido',
+                "email.exists" => 'Login ou senha inválidos.',
+            ]
+        );
+    }
+
+    public function username()
+    {
+        return 'email';
     }
 }
