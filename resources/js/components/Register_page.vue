@@ -22,6 +22,7 @@
                     :class="errors.name ? 'form-control is-invalid' : 'form-control'"
                     name="name"
                     placeholder="Insira seu nome..."
+                    v-model="old_name"
                     :value="old_name"
                     autocomplete="name"
                     autofocus>
@@ -44,6 +45,7 @@
                     :class="errors.lastname ? 'form-control is-invalid' : 'form-control'"
                     name="lastname"
                     placeholder="Insira seu sobrenome..."
+                    v-model="old_lastname"
                     :value="old_lastname"
                     autocomplete="lastname"
                     autofocus>
@@ -66,6 +68,7 @@
                     :class="errors.email ? 'form-control is-invalid' : 'form-control'"
                     name="email"
                     placeholder="Insira seu e-mail..."
+                    v-model="old_email"
                     :value="old_email"
                     autocomplete="email">
 
@@ -83,13 +86,18 @@
 
                 <div class="col-md-6 container-password">
                   <input id="password"
-                    type="password"
+                    :type="pass_button === '' ? 'password' : 'text'"
                     :class="errors.password ? 'form-control is-invalid' : 'form-control'"
                     name="password"
                     placeholder="Insira sua senha..."
                     :value="old_password"
+                    v-model="old_password"
                     autocomplete="new-password">
-                  <i class="fa-solid fa-eye eye-icon"></i>
+                  <button type="button"
+                    class="password-eye-button eye-icon"
+                    @click.prevent="toggle_pass_button()">
+                    <i :class="`fa-solid fa-eye${pass_button}`"></i>
+                  </button>
                 </div>
               </div>
 
@@ -99,13 +107,18 @@
 
                 <div class="col-md-6 container-password">
                   <input id="password-confirm"
-                    type="password"
+                    :type="confirm_pass_button === '' ? 'password' : 'text'"
                     :class="errors.password ? 'form-control is-invalid' : 'form-control'"
                     name="password_confirmation"
                     placeholder="Confirme sua senha..."
+                    v-model="old_confirm_password"
                     :value="old_confirm_password"
                     autocomplete="new-password">
-                  <i class="fa-solid fa-eye eye-icon"></i>
+                  <button type="button"
+                    class="confirm-password-eye-button eye-icon"
+                    @click.prevent="toggle_confirm_pass_button()">
+                    <i :class="`fa-solid fa-eye${confirm_pass_button}`"></i>
+                  </button>
 
                   <span v-if="errors.password"
                     class="invalid-feedback"
@@ -136,11 +149,25 @@ export default {
   props: ['token_csrf', 'errors', 'old', 'register'],
   data() {
     return {
+      /* Old */
       old_name: this.old.name ?? '',
       old_lastname: this.old.lastname ?? '',
       old_email: this.old.email ?? '',
       old_password: this.old.password ?? '',
-      old_confirm_password: this.old.confirm_password ?? ''
+      old_confirm_password: this.old.confirm_password ?? '',
+
+      /* Button eye */
+      pass_button: '',
+      confirm_pass_button: ''
+    }
+  },
+  methods: {
+    toggle_pass_button() {
+      this.pass_button === '' ? this.pass_button = '-slash' : this.pass_button = '';
+    },
+
+    toggle_confirm_pass_button() {
+      this.confirm_pass_button === '' ? this.confirm_pass_button = '-slash' : this.confirm_pass_button = '';
     }
   }
 }
@@ -155,9 +182,15 @@ export default {
 }
 
 .eye-icon {
+  display: inline-flex;
   position: absolute;
   right: 50px;
   top: 10px;
   font-size: 18px;
+}
+
+.fa-eye-slash {
+  position: absolute;
+  right: -1px;
 }
 </style>

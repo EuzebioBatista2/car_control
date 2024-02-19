@@ -14,5 +14,8 @@
         "sass": "^1.56.1",
         "vite": "^5.0.0",
         "vue": "^3.2.37"
+    },
+    "dependencies": {
+        "inputmask": "^5.0.8"
     }
 }

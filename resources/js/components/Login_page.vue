@@ -21,6 +21,7 @@
                     type="email"
                     :class="errors.email ? 'form-control is-invalid' : 'form-control'"
                     name="email"
+                    v-model="old_email"
                     :value="old_email"
                     autocomplete="email"
                     placeholder="Insira seu e-mail..."
@@ -32,15 +33,22 @@
                 <label for="password"
                   class="col-md-4 col-form-label text-md-end text-white">Senha</label>
 
-                <div class="col-md-6">
+                <div class="col-md-6 container-password">
                   <input id="password"
-                    type="password"
+                    :type="pass_button === '' ? 'password' : 'text'"
                     :class="errors.email ? 'form-control is-invalid' : 'form-control'"
                     name="password"
                     placeholder="Insira sua senha..."
                     autocomplete="current-password">
 
-                  <span v-if="errors.email" class="invalid-feedback"
+                  <button type="button"
+                    class="password-eye-button eye-icon"
+                    @click.prevent="toggle_pass_button()">
+                    <i :class="`fa-solid fa-eye${pass_button}`"></i>
+                  </button>
+
+                  <span v-if="errors.email"
+                    class="invalid-feedback"
                     role="alert">
                     <strong>Login ou senha inválidos</strong>
                   </span>
@@ -68,13 +76,39 @@ export default {
   props: ['token_csrf', 'errors', 'old', 'login'],
   data() {
     return {
-      old_email: this.old.email ?? ''
+      /* Old */
+      old_email: this.old.email ?? '',
+
+      /* Button eye */
+      pass_button: '',
     }
+  },
+  methods: {
+    toggle_pass_button() {
+      this.pass_button === '' ? this.pass_button = '-slash' : this.pass_button = '';
+    },
   }
 }
 </script>
 <style scoped>
-  .card-bg {
-    background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67));
-  }
+.card-bg {
+  background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67));
+}
+
+.container-password {
+  position: relative;
+}
+
+.eye-icon {
+  display: inline-flex;
+  position: absolute;
+  right: 50px;
+  top: 10px;
+  font-size: 18px;
+}
+
+.fa-eye-slash {
+  position: absolute;
+  right: -1px;
+}
 </style>

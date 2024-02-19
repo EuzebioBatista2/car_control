@@ -17,7 +17,7 @@
             </h2>
           </div>
           <a v-if="auth === 'login'" href="/login" class="d-flex justify-content-center align-items-center gap-2 btn btn-danger button-link">Faça o login <i class="fa-solid fa-arrow-right"></i></a>
-          <a v-else href="/home" class="d-flex justify-content-center align-items-center gap-2 btn btn-danger button-link">Entrar <i class="fa-solid fa-arrow-right"></i></a>
+          <a v-else href="/dashboard" class="d-flex justify-content-center align-items-center gap-2 btn btn-danger button-link">Entrar <i class="fa-solid fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@ export default {
 .content {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
 }
 
 .button-link {

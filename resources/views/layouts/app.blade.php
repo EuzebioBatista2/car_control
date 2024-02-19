@@ -31,7 +31,7 @@
       <nav class="navbar navbar-expand-md navbar-light nav-bg shadow-sm py-0">
         <div class="container">
           <a class="navbar-brand" href="{{ url("/") }}">
-            <img src="{{ asset("img/Logo.png") }}" id="brand-img" alt="" />
+            <img src="{{ asset("img/Logo.png") }}" id="brand-img" alt="Logo de um carro vermelho" />
           </a>
           <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -83,9 +83,26 @@
         </div>
       </nav>
 
-      <main class="py-4">
+      <main class="py-4 app-main">
         @yield("content")
       </main>
+      <footer>
+        <nav>
+          <div class="links-footer">
+            <a href="https://www.linkedin.com/in/euzebio-batista/" class="link-footer">
+              <i class="fa-brands fa-linkedin text-primary"></i> Linkedin
+            </a>
+            <a href="https://portfolio-euzebiobatista.vercel.app" class="link-footer">
+              <i class="fa-solid fa-user-tie text-info-emphasis"></i> Portfolio
+            </a>
+            <a href="https://github.com/EuzebioBatista2" class="link-footer">
+              <i class="fa-brands fa-github git-icon"></i> GitHub
+            </a>
+          </div>
+        </nav>
+        <hr />
+        <p>Euzebio Batista &copy; 2024.</p>
+      </footer>
     </div>
   </div>
 </body>

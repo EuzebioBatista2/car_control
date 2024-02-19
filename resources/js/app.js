@@ -27,6 +27,12 @@ app.component('login-page', Login_page);
 import Register_page from './components/Register_page.vue';
 app.component('register-page', Register_page);
 
+import Graph_page from './components/Graph_page.vue';
+app.component('graph-page', Graph_page);
+
+import Customers_page from './components/Customers_page.vue';
+app.component('customers-page', Customers_page);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

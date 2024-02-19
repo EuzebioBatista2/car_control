@@ -7,13 +7,24 @@
 
 /* Home page */
 .background-home {
+  display: flex;
+  flex-direction: column;
   background-image: url('../img/background/Home.png');
   background-size: cover;
   min-height: 100vh;
   height: 100%;
 }
+main {
+  flex: 1;
+}
 
-/* Nav */
+.app-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Nav Login/Register */
 #brand-img {
   height: 60px;
   width: auto;
@@ -21,4 +32,152 @@
 
 .nav-bg {
   background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67));
+}
+
+/* Dashboard */
+#menu-bar {
+  display: flex;
+  flex-direction: column;
+  background-color: #262626;
+  padding: 0;
+  position: fixed;
+  width: 260px;
+  transition: .5s ease-in-out;
+  z-index: 20;
+}
+
+#toggle-button {
+  position: absolute;
+  height: 60px;
+  padding: 0 4px;
+  border-top-right-radius: 8px;
+  border-end-end-radius: 8px;
+  background-color: #262626;
+  color: white;
+  right: -16px;
+  top: 50%;
+}
+
+.brand-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4D4D4D;
+  height: 120px;
+}
+
+.img-brand-dash {
+  height: 160px;
+  width: auto;
+}
+
+.container-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.menu-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-name {
+  color: white;
+  font-size: 24px;
+  padding-top: 30px;
+}
+
+.line {
+  border: 2px solid white;
+  width: 80%;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 16px;
+  padding: 30px 0;
+}
+
+.link-dash {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 18px;
+  gap: 8px;
+}
+
+.link-gray {
+  color: #757575;
+  background-color: transparent;
+}
+
+.link-disabled {
+  cursor: default;
+}
+
+/* Dashboard_graphs */
+#box {
+  display: flex;
+  flex: 1;
+  background-color: #D9D9D9;
+  border-radius: 8px;
+}
+
+/* Footer */
+footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67));
+  width: 100%;
+}
+
+.links-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 25%;
+  padding: 6px;
+
+}
+
+.link-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+}
+
+.git-icon {
+  color: orange;
+}
+
+footer hr {
+  border: 1px solid white;
+  width: 50%;
+  margin: 8px;
+}
+
+footer p {
+  border: 0px;
+  color: white;
+}
+
+/* Média */
+@media(max-width: 767px) {
+  #box {
+    padding: 0px;
+  }
 }
