@@ -15,13 +15,16 @@
             <div class="link-header">
               <nav>
                 <form class="d-flex"
-                  role="search">
-                  <input class="form-control me-2"
+                  role="search" :action="route + '/search/'" method="GET">
+                  <input :class="'form-control me-2'"
                     type="search"
-                    placeholder="Search"
+                    name="name"
+                    placeholder="Consulte pelo nome do cliente"
+                    v-model="old_search"
+                    :value="old_search"
                     aria-label="Search">
                   <button class="btn btn-outline-danger"
-                    type="submit">Search</button>
+                    type="submit">Pesquisar</button>
                 </form>
               </nav>
             </div>
@@ -160,7 +163,7 @@
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="gender"
-                            class="form-label d-inline-flex mx-2 mb-1">Sexo:</label>
+                            class="form-label d-inline-flex mx-2 mb-1">Gênero:</label>
                         </div>
                         <select class="form-select"
                           :class="errors.gender ? 'form-control is-invalid' : 'form-control'"
@@ -205,9 +208,35 @@
               </thead>
               <tbody>
                 <tr v-for="customer in customers.data">
-                  <th v-for="data in customer" scope="row"><span class="span-container">{{ data }}</span></th>
-                  <th><button class="btn btn-primary">edit</button></th>
-                  <th><button class="btn btn-primary">Veículo</button></th>
+                  <th v-for="data in customer"
+                    scope="row">
+                    <span v-if="data === 'M'"
+                      class="data text-primary"><i class="fa-solid fa-mars"></i></span>
+                    <span v-else-if="data === 'F'"
+                      class="data text-danger"><i class="fa-solid fa-venus"></i></span>
+                    <span v-else-if="data === 'N'"
+                      class="data text-warning"><i class="fa-solid fa-transgender"></i></span>
+                    <span v-else
+                      class="data">{{ data }}</span>
+                  </th>
+                  <th>
+                    <a :href="route + '/' + customer.id"
+                      class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <form :action="route + '/' + customer.id"
+                      method="POST" class="d-inline">
+                      <input type="hidden"
+                        name="_token"
+                        :value="csrf_token">
+                      <input type="hidden"
+                        name="_method"
+                        value="DELETE">
+                      <button type="submit"
+                        class="btn btn-danger mx-1">
+                        <i class="fa-solid fa-trash">
+                        </i></button>
+                    </form>
+                  </th>
+                  <th><a :href="'vehicles/' + customer.id" class="btn btn-primary">Veículos</a></th>
                 </tr>
               </tbody>
             </table>
@@ -252,7 +281,7 @@
 import Inputmask from 'inputmask';
 
 export default {
-  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route'],
+  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
   data() {
     return {
       old_name: this.old.name ?? '',
@@ -261,6 +290,7 @@ export default {
       old_phone: this.old.phone ?? '',
       old_age: this.old.age ?? '',
       old_gender: this.old.gender ? this.old.gender : 'N',
+      old_search: this.search ?? '',
     }
   },
   mounted() {
@@ -341,7 +371,7 @@ h2 {
 }
 
 .table-over table {
-  min-width: 800px;
+  min-width: 1000px;
 }
 
 /* Modal */
@@ -356,13 +386,12 @@ h2 {
   outline: 3px solid rgba(255, 0, 0, 0.418);
 }
 
-.span-container {
-  display: flex;
-  flex-grow: 1;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
+.data {
+  display: flow;
+  padding: inherit;
 }
+
+
 
 @media(max-width: 767px) {
   .add-button button {

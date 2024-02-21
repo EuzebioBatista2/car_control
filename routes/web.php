@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -36,5 +37,15 @@ Route::middleware(['auth'])->group(function () {
 
     /* Customers route */
     Route::get('/customers', [CustomersController::class, 'index'])->name('customers');
+    Route::get('/customers/search', [CustomersController::class, 'search'])->name('search');
     Route::post('/customers', [CustomersController::class, 'create'])->name('customers');
+    Route::get('/customers/{id}', [CustomersController::class, 'edit'])->name('edit_customer');
+    Route::put('/customers/{id}', [CustomersController::class, 'update'])->name('update_customer');
+    Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->name('delete_customer');
+
+    Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
+});
+
+Route::fallback(function () {
+    return view('access_denied');
 });

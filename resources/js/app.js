@@ -33,6 +33,11 @@ app.component('graph-page', Graph_page);
 import Customers_page from './components/Customers_page.vue';
 app.component('customers-page', Customers_page);
 
+import Edit_customer_page from './components/Edit_customer_page.vue';
+app.component('edit-customer-page', Edit_customer_page);
+
+import Vehicles_page from './components/Vehicles_page.vue';
+app.component('vehicles-page', Vehicles_page);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

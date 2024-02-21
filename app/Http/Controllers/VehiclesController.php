@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
+use App\Models\Vehicles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Validation\Rule;
 
-class CustomersController extends Controller
+class VehiclesController extends Controller
 {
     //
     public function index()
     {
-        $admin_id = auth()->user()->id;
-        $customers = Customers::where('admin_id', $admin_id)
-            ->select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
-            ->orderBy('id', 'asc')->paginate(5);
+        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->orderBy('name', 'asc')->paginate(5);
         $columns = [];
 
-        if ($customers->count() > 0) {
-            $columns = array_keys($customers->first()->getAttributes());
+        if ($vehicles->count() > 0) {
+            $columns = array_keys($vehicles->first()->getAttributes());
 
             foreach ($columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
@@ -35,13 +35,13 @@ class CustomersController extends Controller
             }
         }
 
-        return view('customers', ['customers' => $customers, 'columns' => $columns, 'search' => '']);
+        return view('vehicles', ['vehicles' => $vehicles, 'columns' => $columns, 'search' => '']);
     }
 
     public function validator(array $data, $id = null)
     {
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
-        
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç]+$/'],
             'lastname' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
@@ -120,7 +120,7 @@ class CustomersController extends Controller
     public function edit($id)
     {
 
-        if(!(intval($id) == $id)) {
+        if (!(intval($id) == $id)) {
             return redirect()->route('customers');
         }
 
@@ -187,7 +187,8 @@ class CustomersController extends Controller
         return redirect()->route('customers');
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $query = $request->input('name');
 
         $admin_id = auth()->user()->id;

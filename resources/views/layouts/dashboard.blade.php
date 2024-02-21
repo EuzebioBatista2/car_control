@@ -48,8 +48,8 @@
                   @if (Route::currentRouteName() === "customers") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
                   <i class="fa-solid fa-user link-dash"></i> CLIENTES
                 </a>
-                <a href=""
-                  @if (Route::currentRouteName() === "cars") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
+                <a href="{{ route("vehicles") }}"
+                  @if (Route::currentRouteName() === "vehicles") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
                   <i class="fa-solid fa-car link-dash"></i> VEÍCULOS
                 </a>
                 <a href=""

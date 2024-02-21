@@ -13,4 +13,9 @@ class Customers extends Model
     public function admins() {
         return $this->belongsTo('App\Models\Admins');
     }
+
+    public function vehicles() {
+        return $this->hasMany('App\Models\Vehicles');
+    }
 }
+
