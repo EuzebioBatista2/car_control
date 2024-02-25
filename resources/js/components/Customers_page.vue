@@ -236,7 +236,7 @@
                         </i></button>
                     </form>
                   </th>
-                  <th><a :href="'vehicles/' + customer.id" class="btn btn-primary">Veículos</a></th>
+                  <th><a :href="route_vehicle + '/' + customer.id" class="btn btn-primary">Veículos</a></th>
                 </tr>
               </tbody>
             </table>
@@ -281,7 +281,7 @@
 import Inputmask from 'inputmask';
 
 export default {
-  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
+  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search', 'route_vehicle'],
   data() {
     return {
       old_name: this.old.name ?? '',

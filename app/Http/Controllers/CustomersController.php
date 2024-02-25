@@ -41,7 +41,7 @@ class CustomersController extends Controller
     public function validator(array $data, $id = null)
     {
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
-        
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç]+$/'],
             'lastname' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
@@ -120,7 +120,7 @@ class CustomersController extends Controller
     public function edit($id)
     {
 
-        if(!(intval($id) == $id)) {
+        if (!(intval($id) == $id)) {
             return redirect()->route('customers');
         }
 
@@ -167,6 +167,8 @@ class CustomersController extends Controller
                 'age' => $request->input('age'),
                 'gender' => $request->input('gender')
             ]);
+        } else {
+            return view('access_denied');
         }
 
         Alert::success('Sucesso', 'Cadastro de cliente atualizado com sucesso!')->persistent(true, true);
@@ -187,7 +189,8 @@ class CustomersController extends Controller
         return redirect()->route('customers');
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $query = $request->input('name');
 
         $admin_id = auth()->user()->id;

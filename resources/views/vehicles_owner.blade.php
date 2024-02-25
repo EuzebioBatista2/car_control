@@ -4,9 +4,9 @@
   <div class="container-fluid h-100">
     <div class="row py-3 h-100">
       <div class="col-12" id="box">
-        <customers-page :customers="{{ json_encode($customers) }}" :columns="{{ json_encode($columns) }}"
+        <vehicles-owner-page :vehicles="{{ json_encode($vehicles) }}" :customer="{{ json_encode($customer) }}" :columns="{{ json_encode($columns) }}"
           csrf_token="{{ @csrf_token() }}" :errors="{{ $errors->toJson() }}" :old="{{ json_encode(old()) }}"
-          :route="{{ json_encode(route("customers")) }}" :search="{{ json_encode($search)}}" :route_vehicle ="{{ json_encode(route("vehicles")) }}"></customers-page>
+          :route="{{ json_encode(route("vehicles")) }}" :search="{{ json_encode($search)}}"></vehicles-owner-page>
       </div>
     </div>
   </div>

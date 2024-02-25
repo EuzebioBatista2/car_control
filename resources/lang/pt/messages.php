@@ -5,5 +5,12 @@ return [
   'lastname' => 'sobrenome',
   'phone' => 'Telefone',
   'age' => 'idade',
-  'gender' => 'sexo'
+  'gender' => 'sexo',
+  'brand' => 'marca',
+  'model' => 'modelo',
+  'year' => 'ano',
+  'color' => 'cor',
+  'steering_system' => 'sistema de direção',
+  'type_of_fuel' => 'tipo de combustível',
+  'customer_id' => 'adicionar'
 ];

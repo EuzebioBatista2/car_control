@@ -37,13 +37,21 @@ Route::middleware(['auth'])->group(function () {
 
     /* Customers route */
     Route::get('/customers', [CustomersController::class, 'index'])->name('customers');
-    Route::get('/customers/search', [CustomersController::class, 'search'])->name('search');
+    Route::get('/customers/search', [CustomersController::class, 'search'])->name('search_customers');
     Route::post('/customers', [CustomersController::class, 'create'])->name('customers');
     Route::get('/customers/{id}', [CustomersController::class, 'edit'])->name('edit_customer');
     Route::put('/customers/{id}', [CustomersController::class, 'update'])->name('update_customer');
     Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->name('delete_customer');
 
+    /* Vehicles route */
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
+    Route::get('/vehicles/search', [VehiclesController::class, 'search'])->name('search_vehicles');
+    Route::get('/vehicles/search_owner/{id}', [VehiclesController::class, 'search_owner'])->name('search_customer_vehicles');
+    Route::get('/vehicles/{id}', [VehiclesController::class, 'index_owner'])->name('owner');
+    Route::post('/vehicles/{id}', [VehiclesController::class, 'create'])->name('create_vehicles');
+    Route::get('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'edit'])->name('edit_vehicles');
+    Route::put('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'update'])->name('update_vehicles');
+    Route::delete('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'destroy'])->name('delete_vehicles');
 });
 
 Route::fallback(function () {

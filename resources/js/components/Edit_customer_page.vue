@@ -8,16 +8,13 @@
     </div>
     <div class="row"
       id="edit-container">
-      <div class="col-12">
-        <div class="container-sub-title">
-          <h4>Editar dados <i class="fa-solid fa-pen-to-square"></i></h4>
-          <a :href="route"
-            class="icon-back"><i class="fa-solid fa-left-long"></i></a>
-        </div>
-      </div>
-      <div class="col-12">
+      <div class="col-12 black-container">
         <div class="inputs">
-          <form :action="route + '/' + customer.id" method="POST"
+          <div class="container-sub-title mb-5">
+            <h4>Editar dados <i class="fa-solid fa-pen-to-square mx-2"></i></h4>
+          </div>
+          <form :action="route + '/' + customer.id"
+            method="POST"
             class="form-container">
             <input type="hidden"
               name="_token"
@@ -152,8 +149,8 @@
               </div>
 
               <div class="button-container">
-                <button type="reset"
-                  class="btn btn-secondary">Cancelar</button>
+                <a :href="route"
+                  class="btn btn-secondary">Voltar</a>
                 <button class="btn btn-primary"
                   type="submit">Atualizar</button>
               </div>
@@ -172,12 +169,12 @@ export default {
   props: ['customer', 'csrf_token', 'errors', 'old', 'route'],
   data() {
     return {
-      old_name: this.customer.name,
-      old_lastname: this.customer.lastname,
-      old_email: this.customer.email,
-      old_phone: this.customer.phone,
-      old_age: this.customer.age,
-      old_gender: this.customer.gender,
+      old_name: this.old.name ?? this.customer.name ?? '',
+      old_lastname: this.old.lastname ?? this.customer.lastname ?? '',
+      old_email: this.old.email ?? this.customer.email ?? '',
+      old_phone: this.old.phone ?? this.customer.phone ?? '',
+      old_age: this.old.age ?? this.customer.age ?? '',
+      old_gender: this.old.gender ?? this.customer.gender ?? '',
     }
   },
   mounted() {
@@ -215,6 +212,13 @@ h2 {
   border-radius: 8px;
 }
 
+.inputs {
+  padding: 16px;
+  color: white;
+  background-color: #212529;
+  border-radius: 8px;
+}
+
 .container-sub-title {
   display: flex;
   align-items: center;
@@ -229,7 +233,7 @@ h2 {
   left: 0;
   font-size: 24px;
   text-decoration: none;
-  color: black;
+  color: white;
 }
 
 h4 {
@@ -251,4 +255,15 @@ h4 {
   display: flex;
   gap: 10px;
   justify-content: end;
-}</style>
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0px;
+  }
+
+  .black-container {
+    padding: 0px;
+  }
+}
+</style>

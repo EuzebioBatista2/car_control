@@ -15,6 +15,7 @@ import { createApp } from 'vue';
 
 const app = createApp({});
 
+
 import ExampleComponent from './components/ExampleComponent.vue';
 app.component('example-component', ExampleComponent);
 
@@ -38,6 +39,12 @@ app.component('edit-customer-page', Edit_customer_page);
 
 import Vehicles_page from './components/Vehicles_page.vue';
 app.component('vehicles-page', Vehicles_page);
+
+import Vehicles_owner_page from './components/Vehicles_owner_page.vue';
+app.component('vehicles-owner-page', Vehicles_owner_page);
+
+import Edit_vehicle_page from './components/Edit_vehicle_page.vue';
+app.component('edit-vehicle-page', Edit_vehicle_page);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

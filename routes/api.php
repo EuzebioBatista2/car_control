@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VehiclesDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('vehicles-data', [VehiclesDataController::class, 'index']);
+Route::get('models/', [VehiclesDataController::class, 'models']);
+Route::get('models/{brand}', [VehiclesDataController::class, 'models']);

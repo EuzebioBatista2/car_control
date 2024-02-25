@@ -8,7 +8,7 @@
         <div class="card-header">Página bloqueada ou inexistente</div>
 
         <div class="card-body">
-          <p>O conteúdo dessa página pode está negado ou inexistente.</p>
+          <p>O conteúdo dessa página pode estar negado ou inexistente.</p>
           <a href="/dashboard">Pagina inicial</a>
         </div>
       </div>
