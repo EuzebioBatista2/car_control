@@ -254,10 +254,10 @@ class VehiclesController extends Controller
             return view('access_denied');
         }
 
-        $customer = Vehicles::where('id', $id_vehicle)->first();
-        if ($customer) {
+        $vehicle = Vehicles::where('id', $id_vehicle)->first();
+        if ($vehicle) {
             Alert::success('Sucesso', 'Cadastro de cliente excluído com sucesso!')->persistent(true, true);
-            $customer->delete();
+            $vehicle->delete();
         } else {
             Alert::error('Erro', 'Infelizmente não foi possivel excluir o registro selecionado.')->persistent(true, true);
         }
@@ -276,6 +276,7 @@ class VehiclesController extends Controller
             ->where('customers.admin_id', "$auth_user")
             ->where('vehicles.brand', "ilike", '%' . $query . '%')
             ->orderBy('name', 'asc')->paginate(5);
+            
         $columns = [];
 
         if ($vehicles->count() > 0) {

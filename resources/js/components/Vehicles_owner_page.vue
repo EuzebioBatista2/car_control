@@ -4,7 +4,7 @@
       <div class="col-12 px-4"
         id="container-title">
         <h2><i class="fa-solid fa-car"></i> PROPRIETÁRIO DOS VEÍCULOS</h2>
-        <a href="/vehicles"
+        <a :href="route"
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
     </div>
@@ -304,7 +304,8 @@
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + customer.id + '/' + vehicle.id"
                       method="POST"
-                      class="d-inline">
+                      class="d-inline"
+                      onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
@@ -317,7 +318,7 @@
                         </i></button>
                     </form>
                   </th>
-                  <th><button class="btn btn-primary">Revisões</button></th>
+                  <th><a :href="route_review + '/' + vehicle.id" class="btn btn-primary">Revisões</a></th>
                 </tr>
               </tbody>
             </table>
@@ -361,7 +362,7 @@
 <script>
 
 export default {
-  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
+  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search', 'route_review'],
   data() {
     return {
       old_brand: this.old.brand ?? '',

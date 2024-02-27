@@ -225,7 +225,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.old_color)
     this.fetch_data();
     
     $(this.$refs.brand).select2({

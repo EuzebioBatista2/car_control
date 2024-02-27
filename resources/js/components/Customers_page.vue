@@ -223,7 +223,8 @@
                     <a :href="route + '/' + customer.id"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + customer.id"
-                      method="POST" class="d-inline">
+                      method="POST" class="d-inline"
+                      onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">

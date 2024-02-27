@@ -14,4 +14,8 @@ class Vehicles extends Model
     {
         return $this->belongsTo('App\Models\Customers');
     }
+
+    public function reviews() {
+        return $this->hasMany('App\Modelos\Reviews');
+    }
 }

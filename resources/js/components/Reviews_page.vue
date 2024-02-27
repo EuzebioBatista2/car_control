@@ -3,12 +3,12 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><i class="fa-solid fa-address-book"></i> VEÍCULOS</h2>
-        <a href="/customers"
+        <h2><i class="fa-solid fa-address-book"></i> REVISÃO</h2>
+        <a href="/vehicles"
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
       <div class="col-12 px-4">
-        <p>Para cadastrar o veiculos, o admin deverá ir na página <strong>CLIENTES</strong>, clicando em <strong>Veículos</strong> caso haja cadastro. Ou também pode clicar em <strong>Veículos</strong> na página <strong>VEÍCULOS</strong> caso tenha cadastro de cliente.</p>
+        <p>Para sinalizar que a revisão foi concluída, basta marca a opção referente aos dados do veículo na coluna <strong>CONCLUÍDO</strong>.</p>
       </div>
     </div>
     <div class="row"
@@ -42,15 +42,30 @@
               <thead>
                 <tr>
                   <th v-for="column in columns"
-                    scope="col">{{ column }}</th>
+                    scope="col" :style="column === 'Problemas' ? 'max-width: 600px;' : ''">{{ column }}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="vehicle in vehicles.data">
-                  <th v-for="data in vehicle"
+                <tr v-for="review in reviews.data">
+                  <th v-for="data in review"
                     scope="row">
-                    <span v-if="vehicle.customer_id !== data"  class="data">{{ data }}</span>
-                    <a v-else :href="route + '/' + data" class="btn btn-primary">Veículos</a>  
+                    <span v-if="is_date(data)"
+                      class="data">{{ format_date(data) }}</span>
+                    <span v-else-if="data === '1'"
+                      class="data">
+                      <input type="checkbox"
+                        class="form-check-input"
+                        checked
+                        disabled>
+                    </span>
+                    <span v-else-if="data === '0'"
+                      class="data">
+                      <input type="checkbox"
+                        class="form-check-input"
+                        name="task">
+                    </span>
+                    <span v-else-if="review.vehicle_id !== data" class="data" style="overflow-wrap: break-word; max-width: 600px;margin: 0px auto;">{{ data }}</span>
+                    <a v-else :href="route + '/' + data" class="btn btn-primary">Revisão</a>  
                   </th>
                 </tr>
               </tbody>
@@ -64,21 +79,21 @@
               <ul class="pagination">
                 <li class="page-item">
                   <a class="page-link bg-dark text-white"
-                    :href="vehicles.first_page_url"
+                    :href="reviews.first_page_url"
                     aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
-                <li v-for="page in vehicles.last_page"
+                <li v-for="page in reviews.last_page"
                   :key="page"
                   class="page-item">
                   <a class="page-link bg-dark text-white"
-                    :class="vehicles.links[page].active ? 'navigation-active' : ''"
-                    :href="vehicles.path + '?page=' + page">{{ page }}</a>
+                    :class="reviews.links[page].active ? 'navigation-active' : ''"
+                    :href="reviews.path + '?page=' + page">{{ page }}</a>
                 </li>
                 <li class="page-item">
                   <a class="page-link bg-dark text-white"
-                    :href="vehicles.next_page_url"
+                    :href="reviews.next_page_url"
                     aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
@@ -95,13 +110,20 @@
 <script>
 
 export default {
-  props: ['vehicles', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
+  props: ['reviews', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
   data() {
     return {
       old_search: this.search ?? '',
     }
   },
-
+  methods: {
+    is_date(value) {
+      return moment(value, 'YYYY-MM-DD HH:mm:ss', true).isValid();
+    },
+    format_date(date) {
+      return moment(date).format('DD/MM/YYYY HH:mm:ss');
+    }
+  },
 }
 </script>
 <style scoped>
@@ -117,7 +139,6 @@ export default {
   padding: 40px 0px 20px 0px;
   justify-content: space-between;
 }
-
 .back-link {
   font-size: 28px;
   color: black;

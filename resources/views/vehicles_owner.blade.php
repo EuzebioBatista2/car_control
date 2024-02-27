@@ -6,7 +6,7 @@
       <div class="col-12" id="box">
         <vehicles-owner-page :vehicles="{{ json_encode($vehicles) }}" :customer="{{ json_encode($customer) }}" :columns="{{ json_encode($columns) }}"
           csrf_token="{{ @csrf_token() }}" :errors="{{ $errors->toJson() }}" :old="{{ json_encode(old()) }}"
-          :route="{{ json_encode(route("vehicles")) }}" :search="{{ json_encode($search)}}"></vehicles-owner-page>
+          :route="{{ json_encode(route("vehicles")) }}" :route_review="{{ json_encode(route("reviews")) }}" :search="{{ json_encode($search) }}"></vehicles-owner-page>
       </div>
     </div>
   </div>

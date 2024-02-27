@@ -24,10 +24,11 @@
   <!-- Scripts -->
   @vite(["resources/sass/app.scss", "resources/js/app.js"])
 
-  <!-- Material Design for Bootstrap --->
+  <!-- Select2 + jQuery + Moment --->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
 
 </head>
 
@@ -57,7 +58,7 @@
                   @if (Route::currentRouteName() === "vehicles") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
                   <i class="fa-solid fa-car link-dash"></i> VEÍCULOS
                 </a>
-                <a href=""
+                <a href="{{ route("reviews") }}"
                   @if (Route::currentRouteName() === "reviews") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
                   <i class="fa-solid fa-address-book link-dash"></i> REVISÕES
                 </a>

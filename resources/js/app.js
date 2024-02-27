@@ -45,6 +45,15 @@ app.component('vehicles-owner-page', Vehicles_owner_page);
 
 import Edit_vehicle_page from './components/Edit_vehicle_page.vue';
 app.component('edit-vehicle-page', Edit_vehicle_page);
+
+import Reviews_page from './components/Reviews_page.vue';
+app.component('reviews-page', Reviews_page);
+
+import Reviews_owner_page from './components/Reviews_owner_page.vue';
+app.component('reviews_owner-page', Reviews_owner_page);
+
+import Edit_review_page from './components/Edit_review_page.vue';
+app.component('edit-review-page', Edit_review_page);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

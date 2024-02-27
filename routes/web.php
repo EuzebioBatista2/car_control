@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'edit'])->name('edit_vehicles');
     Route::put('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'update'])->name('update_vehicles');
     Route::delete('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'destroy'])->name('delete_vehicles');
+
+    /* Reviews route */
+    Route::get('/reviews', [ReviewsController::class, 'index'])->name('reviews');
+    Route::get('/reviews/search', [ReviewsController::class, 'search'])->name('search_review');
+    Route::get('/reviews/search_owner/{id}', [ReviewsController::class, 'search_owner'])->name('search_vehicles_review');
+    Route::get('/reviews/{id}', [ReviewsController::class, 'index_owner_review'])->name('owner_review');
+    Route::post('/reviews/{id}', [ReviewsController::class, 'create'])->name('create_review');
+    Route::get('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'edit'])->name('edit_reviews');
+    Route::put('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'update'])->name('update_reviews');
+    Route::delete('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'destroy'])->name('delete_reviews');
 });
 
 Route::fallback(function () {
