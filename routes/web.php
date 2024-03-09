@@ -3,8 +3,10 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ReviewsController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'edit'])->name('edit_reviews');
     Route::put('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'update'])->name('update_reviews');
     Route::delete('/reviews/{id_vehicle}/{id_review}', [ReviewsController::class, 'destroy'])->name('delete_reviews');
+
+    /* Files route */
+    Route::get('/pdf', [PdfController::class, 'index'])->name('pdf');
+    Route::get('/excel', [ExcelController::class, 'index'])->name('excel');
 });
 
 Route::fallback(function () {

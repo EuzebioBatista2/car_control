@@ -16,6 +16,8 @@
         "vue": "^3.2.37"
     },
     "dependencies": {
-        "inputmask": "^5.0.8"
+        "exceljs": "^4.4.0",
+        "inputmask": "^5.0.8",
+        "jspdf": "^2.5.1"
     }
 }

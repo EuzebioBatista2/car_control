@@ -7,40 +7,25 @@ use App\Models\Reviews;
 use App\Models\Vehicles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
 
-class HomeController extends Controller
+class PdfController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    //
     public function index()
     {
         $auth_user = auth()->user()->id;
 
         /* Value graph */
-        $customers = Customers::select('id')->where('admin_id', $auth_user)->count();
-        $vehicles = Vehicles::select('id')
+        $customers_graph = Customers::select('id')->where('admin_id', $auth_user)->count();
+        $vehicles_graph = Vehicles::select('id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->where('customers.admin_id', $auth_user)->count();
-        $reviews = Reviews::select('id')
+        $reviews_graph = Reviews::select('id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->where('customers.admin_id', $auth_user)->count();
 
-        /* At least 7 days */
         $current_date = Carbon::now();
 
         for ($i = 0; $i < 7; $i++) {
@@ -77,7 +62,6 @@ class HomeController extends Controller
             ]
         ];
 
-        /* Gender */
         $genders_values = [];
         $genders = Customers::select(
             DB::raw("SUM(CASE WHEN gender = 'M' THEN 1 ELSE 0 END) AS Masculino"),
@@ -92,7 +76,7 @@ class HomeController extends Controller
             $genders_values[] = $gender;
         }
 
-        $gender_data = [
+        $genders_graph = [
             'labels' => ['Masculino', 'Feminino', 'Não definido'],
             'datasets' => [
                 [
@@ -106,7 +90,6 @@ class HomeController extends Controller
             ]
         ];
 
-        /* Owner vehicles */
         $customers_count = Customers::select('customers.name', DB::raw('COUNT(vehicles.customer_id) as count'))
             ->leftJoin('vehicles', 'customers.id', '=', 'vehicles.customer_id')
             ->where('customers.admin_id', $auth_user)
@@ -116,14 +99,16 @@ class HomeController extends Controller
             ->get()
             ->pluck('count', 'name')
             ->toArray();
-        
+
+
         $label_customers = [];
         $value_customers = [];
         foreach ($customers_count as $name => $count) {
             $label_customers[] = $name;
             $value_customers[] = $count;
         }
-        $top_customers = [
+
+        $top_customers_graph = [
             'labels' => $label_customers,
             'datasets' => [
                 [
@@ -141,16 +126,96 @@ class HomeController extends Controller
             ]
         ];
 
-        return view('home', ['customers' => $customers, 'vehicles' => $vehicles, 'reviews' => $reviews, 'line_graph' => $line_graph, 'genders' => $gender_data, 'top_customers' => $top_customers]);
-    }
+        /* Table customers */
+        $customers_table = Customers::where('admin_id', $auth_user)
+            ->select('name', 'lastname', 'email', 'phone', 'age', 'gender')
+            ->orderBy('id', 'asc')->limit(20)->get();
+        $customers_columns = [];
 
+        if ($customers_table->count() > 0) {
+            $customers_columns = array_keys($customers_table->first()->getAttributes());
+
+            foreach ($customers_columns as $key => $column) {
+                $translated_column = Lang::get("messages.$column");
+                if ($translated_column !== "messages.$column") {
+                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                    $customers_columns[$key] = ucfirst($translated_column);
+                } else {
+                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                    $customers_columns[$key] = ucfirst($column);
+                }
+            }
+        }
+
+        /* Tavle vehicles */
+        $vehicles_table = Vehicles::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->where('customers.admin_id', "$auth_user")
+            ->orderBy('name', 'asc')->limit(20)->get();
+        $vehicles_columns = [];
+
+        if ($vehicles_table->count() > 0) {
+            $vehicles_columns = array_keys($vehicles_table->first()->getAttributes());
+
+            foreach ($vehicles_columns as $key => $column) {
+                $translated_column = Lang::get("messages.$column");
+                if ($translated_column !== "messages.$column") {
+                    $vehicles_columns[$key] = ucfirst($translated_column);
+                } else {
+                    $vehicles_columns[$key] = ucfirst($column);
+                }
+            }
+        }
+
+        /* Table reviews */
+        $reviews_table = Reviews::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
+            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->where('customers.admin_id', "$auth_user")
+            ->orderBy('name', 'asc')->limit(20)->get();
+
+        $reviews_columns = [];
+
+        if ($reviews_table->count() > 0) {
+            $reviews_columns = array_keys($reviews_table->first()->getAttributes());
+
+            foreach ($reviews_columns as $key => $column) {
+                $translated_column = Lang::get("messages.$column");
+                if ($translated_column !== "messages.$column") {
+                    $reviews_columns[$key] = ucfirst($translated_column);
+                } else {
+                    $reviews_columns[$key] = ucfirst($column);
+                }
+            }
+        }
+
+        $data = [
+            'customers_graph' => $customers_graph,
+            'vehicles_graph' => $vehicles_graph,
+            'reviews_graph' => $reviews_graph,
+            'line_graph' => $line_graph,
+            'genders_graph' => $genders_graph,
+            'top_customers_graph' => $top_customers_graph,
+            'customers_table' => $customers_table,
+            'customers_columns' => $customers_columns,
+            'vehicles_table' => $vehicles_table,
+            'vehicles_columns' => $vehicles_columns,
+            'reviews_table' => $reviews_table,
+            'reviews_columns' => $reviews_columns
+        ];
+
+        return view('pdf_file', $data);
+
+    }
 
     public function get_total_count_for_date($date)
     {
         $auth_user = auth()->user()->id;
 
-        $customers_count = Customers::select('id')->whereDate('customers.created_at', $date)
-            ->where('admin_id', $auth_user)->orderBy('id')->count();
+        $customers_count = Customers::whereDate('created_at', $date)
+            ->where('admin_id', $auth_user)->count();
 
         $vehicles_count = Vehicles::whereDate('vehicles.created_at', $date)
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')

@@ -306,7 +306,6 @@
                       class="data">
                       <input type="checkbox"
                         class="form-check-input"
-                        name="task"
                         disabled>
                     </span>
                     <span v-else

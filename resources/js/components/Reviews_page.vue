@@ -62,7 +62,7 @@
                       class="data">
                       <input type="checkbox"
                         class="form-check-input"
-                        name="task">
+                        disabled>
                     </span>
                     <span v-else-if="review.vehicle_id !== data" class="data" style="overflow-wrap: break-word; max-width: 600px;margin: 0px auto;">{{ data }}</span>
                     <a v-else :href="route + '/' + data" class="btn btn-primary">Revisão</a>  

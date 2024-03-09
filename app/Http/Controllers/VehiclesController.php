@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
+use App\Models\Reviews;
 use App\Models\Vehicles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -252,6 +253,17 @@ class VehiclesController extends Controller
 
         if ($customer && $customer['id'] != $id_customer) {
             return view('access_denied');
+        }
+
+        $reviews = Reviews::select('id')
+            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->where('reviews.vehicle_id', $id_vehicle)
+            ->where('customers.admin_id', $auth_user)->count();
+
+        if($reviews > 0) {
+            Alert::error('Erro', 'Cadastro de veículo possui um ou mais revisão(ões) cadastrada(s)!')->persistent(true, true);
+            return redirect()->route('owner', ['id' => $id_customer]);
         }
 
         $vehicle = Vehicles::where('id', $id_vehicle)->first();

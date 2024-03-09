@@ -54,6 +54,13 @@ app.component('reviews_owner-page', Reviews_owner_page);
 
 import Edit_review_page from './components/Edit_review_page.vue';
 app.component('edit-review-page', Edit_review_page);
+
+import PDF_page from './components/PDF_page.vue';
+app.component('pdf-page', PDF_page);
+
+import EXCEL_page from './components/EXCEL_page.vue';
+app.component('excel-page', EXCEL_page);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

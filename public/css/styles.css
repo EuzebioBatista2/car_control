@@ -137,6 +137,70 @@ main {
   background: linear-gradient(to right, rgb(0, 0, 0), rgb(67, 67, 67));
 }
 
+/* Graph */
+#line_graph {
+  height: 300px !important;
+  width: 90% !important;
+}
+
+#genders_graph {
+  width: 90% !important;
+}
+
+#top_customers_graph {
+  width: 260px !important;
+  height: auto !important;
+}
+
+/* Loagin and success */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  padding: 0px 10px;
+  text-align: center;
+  background-color: rgba(233, 233, 233, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 30;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.loading p {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.success {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  text-align: center;
+  padding: 0px 10px;
+  background-color: rgba(233, 233, 233, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 30;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.success p {
+  font-size: 20px;
+  font-weight: 400;
+}
+
 /* Footer */
 footer {
   display: flex;

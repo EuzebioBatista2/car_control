@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
+use App\Models\Vehicles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -178,6 +179,18 @@ class CustomersController extends Controller
 
     public function destroy(int $id)
     {
+        $auth_user = auth()->user()->id;
+
+        $vehicles = Vehicles::select('id')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->where('vehicles.customer_id', $id)
+            ->where('customers.admin_id', $auth_user)->count();
+        
+        if($vehicles > 0) {
+            Alert::error('Erro', 'Cadastro de cliente possui um ou mais veículo(s) cadastrado(s)!')->persistent(true, true);
+            return redirect()->route('customers');
+        }
+
         $customer = Customers::where('id', $id)->first();
         if ($customer) {
             Alert::success('Sucesso', 'Cadastro de cliente excluído com sucesso!')->persistent(true, true);
