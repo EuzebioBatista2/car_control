@@ -19,17 +19,26 @@
           <div class="card-header links-header">
             <div class="link-header">
               <nav>
-                <form class="d-flex"
+                <form class="d-flex search-form"
                   role="search"
                   :action="route + '/search'"
                   method="GET">
-                  <input :class="'form-control me-2'"
-                    type="search"
-                    name="brand"
-                    placeholder="Consulte pela marca do veículo"
-                    v-model="old_search"
-                    :value="old_search"
-                    aria-label="Search">
+                  <!-- Search -->
+                  <select class="form-select"
+                    id="select"
+                    name="select">
+                    <option :selected="old_select === 'id'" value="id">Id</option>
+                    <option :selected="old_select === 'name'" value="name">Nome</option>
+                    <option :selected="old_select === 'brand'" value="brand">Marca</option>
+                    <option :selected="old_select === 'model'" value="model">Modelo</option>
+                    <option :selected="old_select === 'year'" value="year">Ano</option>
+                    <option :selected="old_select === 'color'" value="color">Cor</option>
+                    <option :selected="old_select === 'problems'" value="problems">Problemas</option>
+                  </select>
+                  <input type="search"
+                    name="data"
+                    class="form-control"
+                    v-model="old_data">
                   <button class="btn btn-outline-danger"
                     type="submit">Pesquisar</button>
                 </form>
@@ -37,15 +46,19 @@
             </div>
           </div>
           <div class="card-body table-over">
-            <table v-if="columns && columns.length > 0"
+            <!-- Table columns -->
+            <table v-if="reviews.data && Object.keys(reviews.data).length > 0"
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
                   <th v-for="column in columns"
                     scope="col" :style="column === 'Problemas' ? 'max-width: 600px;' : ''">{{ column }}</th>
+                  <th scope="col">Concluído</th>
+                  <th scope="col">Revisão</th>
                 </tr>
               </thead>
               <tbody>
+                <!-- Table data -->
                 <tr v-for="review in reviews.data">
                   <th v-for="data in review"
                     scope="row">
@@ -73,7 +86,9 @@
             <p v-else
               class="text-white">Não há dados cadastrados no momento ou informações não encontradas.</p>
           </div>
-          <div v-if="columns && columns.length > 0"
+
+          <!-- Paginate -->
+          <div v-if="reviews.data && Object.keys(reviews.data).length > 0"
             class="card-footer text-body-secondary container-footer">
             <nav aria-label="Page navigation">
               <ul class="pagination">
@@ -110,10 +125,11 @@
 <script>
 
 export default {
-  props: ['reviews', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
+  props: ['reviews', 'columns', 'csrf_token', 'errors', 'old', 'route', 'select', 'data'],
   data() {
     return {
-      old_search: this.search ?? '',
+      old_data: this.data ?? '',
+      old_select: this.select === '' ? 'id' : this.select
     }
   },
   methods: {
@@ -127,6 +143,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -149,6 +166,7 @@ h2 {
   margin: 0px;
 }
 
+/* Table */
 #table-container {
   display: flex;
   align-items: center;
@@ -185,6 +203,23 @@ h2 {
   justify-content: end;
 }
 
+.search-form {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-form input {
+  width: 50%;
+}
+
+.search-form button {
+  width: 25%;
+}
+
+.search-form select {
+  width: 20%;
+}
+
 .container-footer {
   display: flex;
   width: 100%;
@@ -192,6 +227,7 @@ h2 {
   justify-content: center;
 }
 
+/* Table */
 .table-over {
   overflow-x: scroll;
 }
@@ -217,8 +253,7 @@ h2 {
   padding: inherit;
 }
 
-
-
+/* Media */
 @media(max-width: 767px) {
   .add-button button {
     width: 100%;
@@ -230,6 +265,18 @@ h2 {
 
   .container {
     padding: 0px;
+  }
+
+  .search-form button {
+    width: 100%;
+  }
+
+  .search-form select {
+    width: 100%;
+  }
+
+  .search-form input {
+    width: 100%;
   }
 }
 </style>

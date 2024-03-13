@@ -14,15 +14,22 @@
           <div class="card-header links-header">
             <div class="link-header">
               <nav>
-                <form class="d-flex"
-                  role="search" :action="route + '/search/'" method="GET">
-                  <input :class="'form-control me-2'"
-                    type="search"
-                    name="name"
-                    placeholder="Consulte pelo nome do cliente"
-                    v-model="old_search"
-                    :value="old_search"
-                    aria-label="Search">
+                <form class="d-flex search-form"
+                  role="search"
+                  :action="route + '/search/'"
+                  method="GET">
+                  <!-- Search -->
+                  <select class="form-select"
+                    id="select"
+                    name="select">
+                    <option v-for="(column, key) in columns"
+                      :value="key"
+                      :selected="old_select === key">{{ column }}</option>
+                  </select>
+                  <input type="search"
+                    name="data"
+                    class="form-control"
+                    v-model="old_data">
                   <button class="btn btn-outline-danger"
                     type="submit">Pesquisar</button>
                 </form>
@@ -57,9 +64,12 @@
                   <div class="modal-body">
                     <form :action="route"
                       method="POST">
+                      <!-- Post method -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
+
+                      <!-- Name -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="name"
@@ -79,6 +89,7 @@
                         </span>
                       </div>
 
+                      <!-- Lastname -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="lastname"
@@ -98,6 +109,7 @@
                         </span>
                       </div>
 
+                      <!-- Email -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="email"
@@ -117,6 +129,7 @@
                         </span>
                       </div>
 
+                      <!-- Phone number -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="phone"
@@ -139,6 +152,7 @@
                         </span>
                       </div>
 
+                      <!-- Age -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="age"
@@ -160,6 +174,7 @@
                         </span>
                       </div>
 
+                      <!-- Gender -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="gender"
@@ -196,10 +211,11 @@
             </div>
           </div>
           <div class="card-body table-over">
-            <table v-if="columns && columns.length > 0"
+            <table v-if="customers.data && Object.keys(customers.data).length > 0"
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
+                  <!-- Table columns -->
                   <th v-for="column in columns"
                     scope="col">{{ column }}</th>
                   <th scope="col">Opções</th>
@@ -207,6 +223,7 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Table data -->
                 <tr v-for="customer in customers.data">
                   <th v-for="data in customer"
                     scope="row">
@@ -223,11 +240,15 @@
                     <a :href="route + '/' + customer.id"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + customer.id"
-                      method="POST" class="d-inline"
+                      method="POST"
+                      class="d-inline"
                       onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
+                      <!-- Token -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
+
+                      <!-- Delete method -->
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
@@ -237,14 +258,16 @@
                         </i></button>
                     </form>
                   </th>
-                  <th><a :href="route_vehicle + '/' + customer.id" class="btn btn-primary">Veículos</a></th>
+                  <th><a :href="route_vehicle + '/' + customer.id"
+                      class="btn btn-primary">Veículos</a></th>
                 </tr>
               </tbody>
             </table>
             <p v-else
               class="text-white">Não há dados cadastrados no momento ou informações não encontradas.</p>
           </div>
-          <div v-if="columns && columns.length > 0"
+          <!-- Paginate -->
+          <div v-if="customers.data && Object.keys(customers.data).length > 0"
             class="card-footer text-body-secondary container-footer">
             <nav aria-label="Page navigation">
               <ul class="pagination">
@@ -279,10 +302,11 @@
 </template>
 
 <script>
+/* Phone input */
 import Inputmask from 'inputmask';
 
 export default {
-  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search', 'route_vehicle'],
+  props: ['customers', 'columns', 'csrf_token', 'errors', 'old', 'route', 'data', 'select', 'route_vehicle'],
   data() {
     return {
       old_name: this.old.name ?? '',
@@ -291,10 +315,12 @@ export default {
       old_phone: this.old.phone ?? '',
       old_age: this.old.age ?? '',
       old_gender: this.old.gender ? this.old.gender : 'N',
-      old_search: this.search ?? '',
+      old_data: this.data ?? '',
+      old_select: this.select === '' ? 'id' : this.select
     }
   },
   mounted() {
+    /* Are there data filled out in the modal? */
     if (Object.values(this.old).length > 0) {
       document.getElementById('modal-button').click();
     }
@@ -308,6 +334,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -324,14 +351,32 @@ h2 {
   margin: 0px;
 }
 
+.search-form {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-form input {
+  width: 50%;
+}
+
+.search-form button {
+  width: 25%;
+}
+
+.search-form select {
+  width: 20%;
+}
+
+/* Table */
 #table-container {
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 1;
-  background-color: red;
   margin: 10px 0px 30px 0px;
   border-radius: 8px;
+  background-color: #212529;
 }
 
 #container-card {
@@ -352,7 +397,7 @@ h2 {
 }
 
 .link-header nav {
-  width: 400px;
+  width: 500px;
 }
 
 .add-button {
@@ -392,8 +437,7 @@ h2 {
   padding: inherit;
 }
 
-
-
+/* Media */
 @media(max-width: 767px) {
   .add-button button {
     width: 100%;
@@ -405,6 +449,18 @@ h2 {
 
   .container {
     padding: 0px;
+  }
+
+  .search-form button {
+    width: 100%;
+  }
+
+  .search-form select {
+    width: 100%;
+  }
+
+  .search-form input {
+    width: 100%;
   }
 }
 </style>

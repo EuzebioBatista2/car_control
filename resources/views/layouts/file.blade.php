@@ -18,6 +18,9 @@
     integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Icon -->
+  <link rel="icon" type="image/ico" href="{{ asset("icons/favicon.ico") }}">
+
   <!-- Style -->
   <link rel="stylesheet" href="{{ asset("css/styles.css") }}">
 
@@ -45,13 +48,7 @@
     <main class="d-flex" style="height: 100vh;">
       <div class="loading">
         <p>Aguarde enquanto o download é carregado</p>
-        <img src="/gif/3D spinning wheel.gif" alt="Roda girando" height="100" width="100">
-      </div>
-      <div class="success">
-        <p>PDF baixado com sucesso</p>
-        <p>pode fechar a guia do navegador.</p>
-        <img src="/gif/Success.gif" alt="Confirmando o download" height="100" width="100">
-        <p>ou clique aqui: <a href="{{ route('dashboard') }}">Página inicial</a></p>
+        <img src="/gif/Tire.gif" alt="Roda girando" height="100" width="100">
       </div>
       <section class="col-12 bg-white content-all">
         @yield("content")

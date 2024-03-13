@@ -12,31 +12,45 @@ use Illuminate\Validation\Rule;
 
 class CustomersController extends Controller
 {
-    //
+    /* User ID at login */
+    private $auth_user;
+
+    public function __construct()
+    {
+        $this->auth_user = '';
+    }
+
+    /* Initial page. */
     public function index()
     {
-        $admin_id = auth()->user()->id;
-        $customers = Customers::where('admin_id', $admin_id)
+        $this->auth_user = auth()->user()->id;
+
+        /* Query the last five customers(paginete) with user ID. */
+        $customers = Customers::where('admin_id', $this->auth_user)
             ->select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
             ->orderBy('id', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($customers->count() > 0) {
-            $columns = array_keys($customers->first()->getAttributes());
+        $customers_columns = Customers::select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
+            ->first()
+            ->getAttributes();
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        /* Columns table */
+        $columns_query = array_keys($customers_columns);
+
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                /* If the traduce exists, replace the column name with formatted name. */
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                /* If the traduce don't exists, capitalize the first letter of the word. */
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('customers', ['customers' => $customers, 'columns' => $columns, 'search' => '']);
+        return view('customers', ['customers' => $customers, 'columns' => $columns, 'data' => '', 'select' => '']);
     }
 
     public function validator(array $data, $id = null)
@@ -97,8 +111,10 @@ class CustomersController extends Controller
 
     public function create(Request $request)
     {
+        /* Verify if the data is valid. */
         $this->validator($request->all())->validate();
 
+        /* Format the name, lastname and email input */
         $capitalize_name = strtolower($request->input('name'));
         $capitalize_lastname = strtolower($request->input('lastname'));
         $capitalize_email = strtolower($request->input('email'));
@@ -121,33 +137,44 @@ class CustomersController extends Controller
     public function edit($id)
     {
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Verify if the id is integer. */
         if (!(intval($id) == $id)) {
             return redirect()->route('customers');
         }
 
-
-        $admin_id = auth()->user()->id;
+        /* Query the first customer by id */
         $customer = Customers::where('id', $id)
-            ->where('admin_id', $admin_id)
+            ->where('admin_id', $this->auth_user)
             ->first();
 
+        /* Customer exist? */
         if ($customer) {
             $customer_data = $customer->toArray();
             return view('edit_customer', ['customer' => $customer_data]);
         }
 
+        /* Customer don't exist? */
         return view('access_denied');
     }
 
     public function update(Request $request, int $id)
     {
+        $this->auth_user = auth()->user()->id;
+
+        /* Verify if the data is valid. */
         $this->validator($request->all(), $id)->validate();
 
+        /* Format the name, lastname and email input. */
         $capitalize_name = strtolower($request->input('name'));
         $capitalize_lastname = strtolower($request->input('lastname'));
         $capitalize_email = strtolower($request->input('email'));
 
+        /* Query the first customer by id */
         $customer = Customers::where('id', $id)->first();
+
+        /* Customer exist? And the data isn't new? */
         if ($customer) {
             if (
                 $customer['name'] === ucfirst($capitalize_name) &&
@@ -160,6 +187,7 @@ class CustomersController extends Controller
                 Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
                 return redirect()->route('customers');
             }
+
             $customer->update([
                 'name' => ucfirst($capitalize_name),
                 'lastname' => ucwords($capitalize_lastname),
@@ -179,19 +207,25 @@ class CustomersController extends Controller
 
     public function destroy(int $id)
     {
-        $auth_user = auth()->user()->id;
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Query if there are vehicle records in the customer. */
         $vehicles = Vehicles::select('id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->where('vehicles.customer_id', $id)
-            ->where('customers.admin_id', $auth_user)->count();
-        
-        if($vehicles > 0) {
+            ->where('customers.admin_id', $this->auth_user)->count();
+
+        /* Vehicle(s) exist? */
+        if ($vehicles > 0) {
             Alert::error('Erro', 'Cadastro de cliente possui um ou mais veículo(s) cadastrado(s)!')->persistent(true, true);
             return redirect()->route('customers');
         }
 
+        /* Query the customer on the ID */
         $customer = Customers::where('id', $id)->first();
+
+        /* Customer exist? */
         if ($customer) {
             Alert::success('Sucesso', 'Cadastro de cliente excluído com sucesso!')->persistent(true, true);
             $customer->delete();
@@ -204,30 +238,43 @@ class CustomersController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('name');
+        $select = $request->input('select');
+        $data = $request->input('data');
 
-        $admin_id = auth()->user()->id;
-        $customers = Customers::where('admin_id', $admin_id)
-            ->where("name", "ilike", '%' . $query . '%')
+        $this->auth_user = auth()->user()->id;
+
+        /* Table columns */
+        $customers_columns = Customers::select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
+            ->first()
+            ->getAttributes();
+
+        /* Select don't macha the customers_columns */
+        if (!in_array($select, array_keys($customers_columns))) {
+            return view('access_denied');
+        }
+
+        /* Query customers based on the name input */
+        $customers = Customers::where('admin_id', $this->auth_user)
+            ->where("$select", "ilike", '%' . $data . '%')
             ->select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
             ->orderBy('id', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($customers->count() > 0) {
-            $columns = array_keys($customers->first()->getAttributes());
+        /* Columns table */
+        $columns_query = array_keys($customers_columns);
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                /* If the traduce exists, replace the column name with formatted name. */
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                /* If the traduce don't exists, capitalize the first letter of the word. */
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('customers', ['customers' => $customers, 'columns' => $columns, 'search' => $query]);
+        return view('customers', ['customers' => $customers, 'columns' => $columns, 'data' => $data, 'select' => $select]);
     }
 }

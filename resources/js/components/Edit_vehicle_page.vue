@@ -16,12 +16,18 @@
           <form :action="route + '/' + customer.id + '/' + vehicle.id"
             method="POST"
             class="form-container">
+
+            <!-- Token -->
             <input type="hidden"
               name="_token"
               :value="csrf_token">
+
+            <!-- Put method -->
             <input type="hidden"
               name="_method"
               value="PUT">
+
+            <!-- Brand -->
             <div class="item-container">
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
@@ -45,6 +51,7 @@
                 </span>
               </div>
 
+              <!-- Model -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="model"
@@ -67,6 +74,7 @@
                 </span>
               </div>
 
+              <!-- Steering system -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="steering_system"
@@ -91,8 +99,9 @@
                   <strong>{{ errors.steering_system[0] }}</strong>
                 </span>
               </div>
-
             </div>
+
+            <!-- Color -->
             <div class="item-container">
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
@@ -116,6 +125,7 @@
                 </span>
               </div>
 
+              <!-- Year -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="year"
@@ -138,6 +148,7 @@
                 </span>
               </div>
 
+              <!-- Type of fuel -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="type_of_fuel"
@@ -194,6 +205,7 @@ export default {
     }
   },
   methods: {
+    /* Fill in the vehicle selection input */
     fetch_data() {
       fetch('http://localhost:8000/api/vehicles-data')
         .then(response => response.json())
@@ -204,6 +216,8 @@ export default {
           console.error('Houve um erro ao buscar os dados: ', error);
         });
     },
+
+    /* Select the old brand if it exists. */
     fill_select(brand) {
       $.ajax({
         url: `http://localhost:8000/api/models/${brand}`,
@@ -239,13 +253,10 @@ export default {
       width: '100%'
     });
 
+    /* Error or normal  */
     $('[aria-labelledby="select2-brand-container"]').css('border-color', this.errors.brand ? '#D93845' : '#DEE2E6');
     $('[aria-labelledby="select2-model-container"]').css('border-color', this.errors.model ? '#D93845' : '#DEE2E6');
     $('[aria-labelledby="select2-color-container"]').css('border-color', this.errors.color ? '#D93845' : '#DEE2E6');
-
-    $('.select2-selection').on('click', function () {
-      $('.select2-dropdown.select2-dropdown--below').css('border-color', '#DEE2E6');
-    });
 
     $(this.$refs.brand).on('change', () => {
       let selected_brand = $('#brand').val();
@@ -260,6 +271,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -330,6 +342,7 @@ h4 {
   justify-content: end;
 }
 
+/* Média */
 @media (max-width: 576px) {
   .container {
     padding: 0px;

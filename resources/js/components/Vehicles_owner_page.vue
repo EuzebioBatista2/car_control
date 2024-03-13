@@ -79,17 +79,22 @@
           <div class="card-header links-header">
             <div class="link-header">
               <nav>
-                <form class="d-flex"
+                <form class="d-flex search-form"
                   role="search"
                   :action="route + '/search_owner/' + customer.id"
                   method="GET">
-                  <input :class="'form-control me-2'"
-                    type="search"
-                    name="brand"
-                    placeholder="Consulte pelo nome da marca do veículo"
-                    v-model="old_search"
-                    :value="old_search"
-                    aria-label="Search">
+                  <!-- Search -->
+                  <select class="form-select search-form"
+                    id="select"
+                    name="select">
+                    <option v-for="(column, key) in columns"
+                      :value="key"
+                      :selected="old_select === key">{{ column }}</option>
+                  </select>
+                  <input type="search"
+                    name="data"
+                    class="form-control"
+                    v-model="old_data">
                   <button class="btn btn-outline-danger"
                     type="submit">Pesquisar</button>
                 </form>
@@ -125,9 +130,12 @@
                   <div class="modal-body">
                     <form :action="route + '/' + customer.id"
                       method="POST">
+                      <!-- Token -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
+
+                      <!-- Brand -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="brand"
@@ -150,6 +158,7 @@
                         </span>
                       </div>
 
+                      <!-- Model -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="model"
@@ -172,6 +181,7 @@
                         </span>
                       </div>
 
+                      <!-- Year -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="year"
@@ -194,6 +204,7 @@
                         </span>
                       </div>
 
+                      <!-- Color -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="color"
@@ -216,6 +227,7 @@
                         </span>
                       </div>
 
+                      <!-- Steering system -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="steering_system"
@@ -241,7 +253,7 @@
                         </span>
                       </div>
 
-                      
+                      <!-- Type of fuel -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="type_of_fuel"
@@ -281,10 +293,11 @@
             </div>
           </div>
           <div class="card-body table-over">
-            <table v-if="columns && columns.length > 0"
+            <table v-if="vehicles.data && Object.keys(vehicles.data).length > 0"
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
+                  <!-- Table columns -->
                   <th v-for="column in columns"
                     scope="col">
                     {{ column }}
@@ -294,6 +307,7 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Table data -->
                 <tr v-for="vehicle in vehicles.data">
                   <th v-for="data in vehicle"
                     scope="row">
@@ -306,9 +320,12 @@
                       method="POST"
                       class="d-inline"
                       onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
+                      <!-- Token -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
+
+                      <!-- Delete method -->
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
@@ -318,14 +335,17 @@
                         </i></button>
                     </form>
                   </th>
-                  <th><a :href="route_review + '/' + vehicle.id" class="btn btn-primary">Revisões</a></th>
+                  <th><a :href="route_review + '/' + vehicle.id"
+                      class="btn btn-primary">Revisões</a></th>
                 </tr>
               </tbody>
             </table>
             <p v-else
               class="text-white">Não há dados cadastrados no momento ou informações não encontradas.</p>
           </div>
-          <div v-if="columns && columns.length > 0"
+
+          <!-- Paginate -->
+          <div v-if="vehicles.data && Object.keys(vehicles.data).length > 0"
             class="card-footer text-body-secondary container-footer">
             <nav aria-label="Page navigation">
               <ul class="pagination">
@@ -362,7 +382,7 @@
 <script>
 
 export default {
-  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search', 'route_review'],
+  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'select', 'data', 'route_review'],
   data() {
     return {
       old_brand: this.old.brand ?? '',
@@ -371,12 +391,14 @@ export default {
       old_color: this.old.color ?? '',
       old_steering_system: this.old.steering_system ?? '',
       old_type_of_fuel: this.old.type_of_fuel ?? '',
-      old_search: this.search ?? '',
+      old_data: this.data ?? '',
+      old_select: this.select === '' ? 'id' : this.select,
       vehicles_data: [],
       models_data: []
     }
   },
   methods: {
+    /* Fill in the brand input */
     fetch_data() {
       fetch('http://localhost:8000/api/vehicles-data')
         .then(response => response.json())
@@ -387,6 +409,8 @@ export default {
           console.error('Houve um erro ao buscar os dados: ', error);
         });
     },
+
+    /* Fill in the model input */
     fill_select(brand) {
       $.ajax({
         url: `http://localhost:8000/api/models/${brand}`,
@@ -426,18 +450,17 @@ export default {
     });
 
 
+    /* Error ou normal */
     $('[aria-labelledby="select2-brand-container"]').css('border-color', this.errors.brand ? '#D93845' : '#DEE2E6');
     $('[aria-labelledby="select2-model-container"]').css('border-color', this.errors.model ? '#D93845' : '#DEE2E6');
     $('[aria-labelledby="select2-color-container"]').css('border-color', this.errors.color ? '#D93845' : '#DEE2E6');
 
-    $('.select2-selection').on('click', function () {
-      $('.select2-dropdown.select2-dropdown--below').css('border-color', '#DEE2E6');
-    });
-
-    if(this.old_brand !== '') {
+    /* Verify if the old data exists */
+    if (this.old_brand !== '') {
       this.fill_select(this.old_brand);
     }
 
+    /* If the brand has changed, activate the model input. */
     $(this.$refs.brand).on('change', () => {
       let selected_brand = $('#brand').val();
       this.fill_select(selected_brand);
@@ -447,6 +470,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -485,6 +509,24 @@ h2 {
   flex-grow: 1;
 }
 
+.search-form {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-form input {
+  width: 50%;
+}
+
+.search-form button {
+  width: 25%;
+}
+
+.search-form select {
+  width: 20%;
+}
+
+/* Table */
 #table-container {
   display: flex;
   align-items: center;
@@ -512,7 +554,7 @@ h2 {
 }
 
 .link-header nav {
-  width: 400px;
+  width: 500px;
 }
 
 .add-button {
@@ -552,7 +594,7 @@ h2 {
   padding: inherit;
 }
 
-
+/* Media */
 @media(max-width: 767px) {
   .add-button button {
     width: 100%;
@@ -565,4 +607,17 @@ h2 {
   .container {
     padding: 0px;
   }
-}</style>
+
+  .search-form button {
+    width: 100%;
+  }
+
+  .search-form select {
+    width: 100%;
+  }
+
+  .search-form input {
+    width: 100%;
+  }
+}
+</style>

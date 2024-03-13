@@ -1,66 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><img src="./public/img/logo.png" width="400" alt="Logo do car control"></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Sobre projeto
 
-## About Laravel
+Este projeto representa meu trabalho pessoal em um sistema de controle de veículos, que permite registrar informações detalhadas sobre clientes e revisões. Desenvolvi uma aplicação robusta que vai além do simples controle de veículos, proporcionando acesso a informações valiosas. Meu sistema organiza e apresenta de forma eficiente os dados e informações obtidas.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> O objetivo principal do meu projeto é fornecer um controle abrangente sobre os veículos, oferecendo funcionalidades para cadastrar clientes, veículos e revisões. Além disso, implementei um dashboard intuitivo que proporciona aos usuários uma visão geral dos dados cadastrados, permitindo uma análise rápida e eficaz.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+> Meu sistema é projetado para facilitar a gestão de veículos, fornecendo uma plataforma centralizada para armazenar e acessar informações relevantes. Estou comprometido em fornecer uma solução que atenda às necessidades dos usuários, proporcionando uma experiência simplificada e eficiente na gestão de frota.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Recursos utilizados
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel
+- PHP
+- Bootstrap
+- VueJS
+- PostgreSQL
+- Jquery
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Libs(Adicionais)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Select2
+- SweetAlert
+- ChartJS
+- Moment
+- InputMask
+- ExcelJS
+- JSPDF
 
-## Laravel Sponsors
+## Hospedagem
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Em breve
 
-### Premium Partners
+## Instalação
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+> Servidor VueJS:
 
-## Contributing
+```sh
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> Servidor Laravel:
 
-## Code of Conduct
+```sh
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Ativar servidor
 
-## Security Vulnerabilities
+> Servidor VueJS:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```sh
+npm run dev
+```
 
-## License
+> Servidor Laravel:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```sh
+php artisan server
+```
+
+## Imagens do projeto
+
+<p align="center"><img src="./public/project/Page_one.png" alt="Página login"></p>
+<p align="center"><img src="./public/project/Page_two.png" alt="Dashboard"></p>
+<p align="center"><img src="./public/project/Page_three.png" alt="Página da tabela"></p>
+<p align="center"><img src="./public/project/Page_four.png" alt="Página de celular"></p>
+
+## Atualizações
+
+* 1.0.0 - ✨ First version
+    * Releasing first version
+    * Update ReadME.md
+    * Update comments
+* 0.5.0 - 📝 PDF and Excel page finished
+    * Initial pages(PDF and Excel)
+    * First style
+    * Security / PDF and Excel model.
+* 0.4.0 - 📝 Review page finished
+    * Initial page(Reviews)
+    * First style
+    * Security.
+* 0.3.1 - 📝 Vehicles page finished.
+    * Select input.
+* 0.3.0 - 📝 Add vehicles page
+    * Initial page(Vehicles)
+    * First style
+    * Security.
+* 0.2.0 - 📝 Add dashboard and customers page
+    * Initial pages(Dashboard and customers)
+    * Charts
+    * First style
+    * Security and Alert.
+* 0.1.0 - 📝 Add: Login, register and home page.
+    * Initial pages(Login, register and home)
+    * First style
+    * Authenticate and security.
+* 0.0.1 - 🎉 First commit
+    * Initial project.
+
+
+## Informações adicionais
+
+Euzebio Batista [@Linkedin](https://www.linkedin.com/in/euzebio-batista) - euzebio.batista2@gmail.com
+
+Criado por **Euzebio Batista**.
+**Todos os direitos reservados.**

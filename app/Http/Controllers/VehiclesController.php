@@ -13,78 +13,106 @@ use Illuminate\Support\Facades\Lang;
 
 class VehiclesController extends Controller
 {
-    //
+    /* User ID at login */
+    private $auth_user;
+
+    public function __construct()
+    {
+        $this->auth_user = '';
+    }
+
+    /* Initial page */
     public function index()
     {
-        $auth_user = auth()->user()->id;
+
+        $this->auth_user = auth()->user()->id;
+
+        /* Query the last five vehicles(paginate) in the table */
         $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel', 'customers.id as customer_id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($vehicles->count() > 0) {
-            $columns = array_keys($vehicles->first()->getAttributes());
+        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->first()
+            ->getAttributes();
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        /* Columns table */
+        $columns_query = array_keys($vehicles_columns);
+
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                /* If the traduce exists, replace the column name with formatted name. */
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                /* If the traduce don't exists, capitalize the first letter of the word. */
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('vehicles', ['vehicles' => $vehicles, 'columns' => $columns, 'search' => '']);
+        return view('vehicles', ['vehicles' => $vehicles, 'columns' => $columns, 'select' => '', 'data' => '']);
     }
 
     public function index_owner($id)
     {
-        $auth_user = auth()->user()->id;
+        $this->auth_user = auth()->user()->id;
 
+        /* Is the ID integer? */
         if (!(intval($id) == $id)) {
             return redirect()->route('vehicles');
         }
 
+        /* Query the first customer with ID(Query) and User ID */
         $customer = Customers::select('customers.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
-
+        /* If the customer ID is different from the id  */
         if ($customer && $customer['id'] != $id) {
             return view('access_denied');
         }
+
+        /* Query the last five vehicles(paginate) in the table */
         $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
             ->orderBy('name', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($vehicles->count() > 0) {
-            $columns = array_keys($vehicles->first()->getAttributes());
+        /* Columns table */
+        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->first()
+            ->getAttributes();
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        /* Columns table */
+        $columns_query = array_keys($vehicles_columns);
+
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                /* If the traduce exists, replace the column name with formatted name. */
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                /* If the traduce don't exists, capitalize the first letter of the word. */
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('vehicles_owner', ['vehicles' => $vehicles, 'customer' => $customer, 'columns' => $columns, 'search' => '']);
+        return view('vehicles_owner', ['vehicles' => $vehicles, 'customer' => $customer, 'columns' => $columns, 'select' => '', 'data' => '']);
     }
 
     public function validator(array $data)
@@ -130,6 +158,7 @@ class VehiclesController extends Controller
 
     public function create(Request $request, int $id)
     {
+        /* Verify if the data is valid. */
         $this->validator($request->all())->validate();
 
         Vehicles::create([
@@ -150,27 +179,31 @@ class VehiclesController extends Controller
     public function edit($id_customer, $id_vehicle)
     {
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Verify if the id_customer is integer. */
         if (!(intval($id_customer) == $id_customer)) {
             return redirect()->route('owner', ['id' => $id_customer]);
         }
 
-        $auth_user = auth()->user()->id;
-
+        /* Query the first customer by id_customer */
         $customer = Customers::select('customers.id', 'customers.name')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the customer ID is different from the id_customer  */
         if ($customer && $customer['id'] != $id_customer) {
             return view('access_denied');
         }
 
+        /* Query the first vehicle with the user ID, vehicle ID and the id_customer. */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id_customer")
             ->where('vehicles.id', "$id_vehicle")
             ->first();
@@ -185,29 +218,34 @@ class VehiclesController extends Controller
 
     public function update(Request $request, $id_customer, $id_vehicle)
     {
+        $this->auth_user = auth()->user()->id;
+
+        /* Verify if the data is valid. */
         $this->validator($request->all())->validate();
 
+        /* Is the ID integer? */
         if (!(intval($id_customer) == $id_customer)) {
             return redirect()->route('owner', ['id' => $id_customer]);
         }
 
-        $auth_user = auth()->user()->id;
-
+        /* Query the first customer with the user ID and the id_customer. */
         $customer = Customers::select('customers.id', 'customers.name')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the customer ID is different from the id_customer */
         if ($customer && $customer['id'] != $id_customer) {
             return view('access_denied');
         }
 
         $vehicle = Vehicles::where('id', "$id_vehicle")
             ->first();
-        
+
         if ($vehicle) {
+            /* Verify if the vehicle query is different from the requested data. */
             if (
                 $vehicle['brand'] === $request->input('brand') &&
                 $vehicle['model'] === $request->input('model') &&
@@ -238,35 +276,41 @@ class VehiclesController extends Controller
 
     public function destroy($id_customer, $id_vehicle)
     {
+
+        $this->auth_user = auth()->user()->id;
+
+        /* Is the ID integer? */
         if (!(intval($id_customer) == $id_customer)) {
             return redirect()->route('owner', ['id' => $id_customer]);
         }
 
-        $auth_user = auth()->user()->id;
-
+        /* Query the first customer with the user ID and the customer ID. */
         $customer = Customers::select('customers.id', 'customers.name')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the customer ID is different from the id_customer  */
         if ($customer && $customer['id'] != $id_customer) {
             return view('access_denied');
         }
 
+        /* Query the number of reviews before deleting */
         $reviews = Reviews::select('id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->where('reviews.vehicle_id', $id_vehicle)
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
-        if($reviews > 0) {
+        if ($reviews > 0) {
             Alert::error('Erro', 'Cadastro de veículo possui um ou mais revisão(ões) cadastrada(s)!')->persistent(true, true);
             return redirect()->route('owner', ['id' => $id_customer]);
         }
 
         $vehicle = Vehicles::where('id', $id_vehicle)->first();
+
         if ($vehicle) {
             Alert::success('Sucesso', 'Cadastro de cliente excluído com sucesso!')->persistent(true, true);
             $vehicle->delete();
@@ -279,81 +323,116 @@ class VehiclesController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('brand');
 
-        $auth_user = auth()->user()->id;
+        $select = $request->input('select');
+        $data = $request->input('data');
+
+        $this->auth_user = auth()->user()->id;
+
+        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->first()
+            ->getAttributes();
+
+        /* Select don't macha the customers_columns */
+        if (!in_array($select, array_keys($vehicles_columns))) {
+            return view('access_denied');
+        }
+
+        $query_select = $select === "name" ? "customers." . $select : "vehicles." . $select;
+
+        /* Query the last five vehicles(paginate) with User ID and query */
         $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel', 'customers.id as customer_id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
-            ->where('vehicles.brand', "ilike", '%' . $query . '%')
+            ->where('customers.admin_id', "$this->auth_user")
+            ->where("$query_select", "ilike", '%' . $data . '%')
             ->orderBy('name', 'asc')->paginate(5);
-            
+
         $columns = [];
 
-        if ($vehicles->count() > 0) {
-            $columns = array_keys($vehicles->first()->getAttributes());
+        /* Table columns */
+        $columns_query = array_keys($vehicles_columns);
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('vehicles', ['vehicles' => $vehicles, 'columns' => $columns, 'search' => $query]);
+        return view('vehicles', ['vehicles' => $vehicles, 'columns' => $columns, 'data' => $data, 'select' => $select]);
     }
 
     public function search_owner(Request $request, $id)
     {
-        $query = $request->input('brand');
 
-        $auth_user = auth()->user()->id;
+        $select = $request->input('select');
+        $data = $request->input('data');
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Is the ID integer? */
         if (!(intval($id) == $id)) {
             return redirect()->route('vehicles');
         }
 
-        $customer = Customers::select('customers.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone')
+        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.id', "$id")
-            ->where('admins.id', "$auth_user")
             ->first()
             ->getAttributes();
 
+        /* Select don't macha the customers_columns */
+        if (!in_array($select, array_keys($vehicles_columns))) {
+            return view('access_denied');
+        }
 
+        /* Query the first customer with the ID and the User ID */
+        $customer = Customers::select('customers.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->where('customers.id', "$id")
+            ->where('admins.id', "$this->auth_user")
+            ->first()
+            ->getAttributes();
+
+        /* If the customer ID is different from the id */
         if ($customer && $customer['id'] != $id) {
             return view('access_denied');
         }
+
+        $query_select = $select === "name" ? "customers." . $select : "vehicles." . $select;
+
+        /* Query the last five vehicles(paginate) with User ID and query */
         $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
-            ->where('vehicles.brand', "ilike", '%' . $query . '%')
+            ->where("$query_select", "ilike", '%' . $data . '%')
             ->orderBy('name', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($vehicles->count() > 0) {
-            $columns = array_keys($vehicles->first()->getAttributes());
+        /* Table columns */
+        $columns_query = array_keys($vehicles_columns);
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('vehicles_owner', ['vehicles' => $vehicles, 'customer' => $customer, 'columns' => $columns, 'search' => $query]);
+        return view('vehicles_owner', ['vehicles' => $vehicles, 'customer' => $customer, 'columns' => $columns, 'data' => $data, 'select' => $select]);
     }
 }

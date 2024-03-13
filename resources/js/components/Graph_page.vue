@@ -46,7 +46,7 @@
           </div>
           <div class="graph-canvas">
             <canvas id="line-canvas"
-              ref="lineChartCanvas"></canvas>
+              ref="line_graph"></canvas>
           </div>
         </div>
       </div>
@@ -90,7 +90,8 @@ export default {
     'route_excel'
   ],
   mounted() {
-    const records = this.$refs.lineChartCanvas;
+    /* The last 7 days chart */
+    const records = this.$refs.line_graph;
     new Chart(records, {
       type: 'line',
       data: {
@@ -106,12 +107,14 @@ export default {
       }
     });
 
+    /* Top customers chart */
     const top_customers = this.$refs.top_customers;
     new Chart(top_customers, {
       type: 'pie',
       data: this.top_customers,
     });
 
+    /* Genders chart */
     const genders = this.$refs.genders;
     new Chart(genders, {
       type: 'bar',
@@ -129,6 +132,7 @@ export default {
 </script>
 
 <style scoped>
+/* Container */
 #container-title {
   display: inline-flex;
   justify-content: space-between;
@@ -174,12 +178,12 @@ h2 {
 
 .value-graph {
   height: 120px;
-  background-color: #262626;
+  background-color: #212529;
   flex-grow: 1;
   min-width: 200px;
   border-radius: 8px;
   padding: 10px;
-  border: 2px solid #262626;
+  border: 2px solid #212529;
 }
 
 .graph-canvas {
@@ -207,22 +211,22 @@ h2 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background-color: #262626;
+  background-color: #212529;
   height: 420px;
   border-radius: 8px;
   overflow-x: auto;
-  border: 2px solid #262626;
+  border: 2px solid #212529;
 }
 
 .total-graph {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background-color: #262626;
+  background-color: #212529;
   height: 420px;
   min-width: 200px;
   border-radius: 8px;
-  border: 2px solid #262626;
+  border: 2px solid #212529;
 }
 
 #top_customers {
@@ -241,6 +245,7 @@ hr {
   margin: 0;
 }
 
+/* Media */
 @media(max-width: 767px) {
 
   #container-title {

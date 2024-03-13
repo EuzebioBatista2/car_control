@@ -7,18 +7,21 @@ use App\Models\Reviews;
 use App\Models\Vehicles;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+    /* User ID at login */
+    private $auth_user;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->auth_user = '';
     }
 
     /**
@@ -26,29 +29,38 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    /* Initial page */
     public function index()
     {
-        $auth_user = auth()->user()->id;
 
-        /* Value graph */
-        $customers = Customers::select('id')->where('admin_id', $auth_user)->count();
+        $this->auth_user = auth()->user()->id;
+
+        /* Query the number of the customers. */
+        $customers = Customers::select('id')->where('admin_id', $this->auth_user)->count();
+
+        /* Query the number of the vehicles. */
         $vehicles = Vehicles::select('id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
+
+        /* Query the number of the reviews. */
         $reviews = Reviews::select('id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
-        /* At least 7 days */
+        /* Date. */
         $current_date = Carbon::now();
 
+        /* Query the records of the last 7 days. */
         for ($i = 0; $i < 7; $i++) {
             $date = $current_date->clone()->subDays($i)->toDateString();
 
+            /* Return the total records. */
             $total_count = $this->get_total_count_for_date($date);
 
             $date_formated = date('d-m', strtotime($date));
+
             $results[] = [
                 'date' => $date_formated,
                 'total_records' => $total_count
@@ -59,11 +71,14 @@ class HomeController extends Controller
 
         $labels = [];
         $values = [];
+
+        /* Format the data in the graph */
         foreach ($dates as $item) {
             $labels[] = $item['date'];
             $values[] = $item['total_records'];
         }
 
+        /* Chart template */
         $line_graph = [
             'labels' => $labels,
             'datasets' => [
@@ -77,14 +92,14 @@ class HomeController extends Controller
             ]
         ];
 
-        /* Gender */
+        /* The number of the genders */
         $genders_values = [];
         $genders = Customers::select(
             DB::raw("SUM(CASE WHEN gender = 'M' THEN 1 ELSE 0 END) AS Masculino"),
             DB::raw("SUM(CASE WHEN gender = 'F' THEN 1 ELSE 0 END) AS Feminino"),
             DB::raw("SUM(CASE WHEN gender = 'N' THEN 1 ELSE 0 END) AS Não_informado")
         )
-            ->where('customers.admin_id', $auth_user)
+            ->where('customers.admin_id', $this->auth_user)
             ->first()
             ->getAttributes();
 
@@ -92,6 +107,7 @@ class HomeController extends Controller
             $genders_values[] = $gender;
         }
 
+        /* Chart template */
         $gender_data = [
             'labels' => ['Masculino', 'Feminino', 'Não definido'],
             'datasets' => [
@@ -106,10 +122,10 @@ class HomeController extends Controller
             ]
         ];
 
-        /* Owner vehicles */
+        /* Query the top five customers with the most vehicles records */
         $customers_count = Customers::select('customers.name', DB::raw('COUNT(vehicles.customer_id) as count'))
             ->leftJoin('vehicles', 'customers.id', '=', 'vehicles.customer_id')
-            ->where('customers.admin_id', $auth_user)
+            ->where('customers.admin_id', $this->auth_user)
             ->groupBy('customers.name')
             ->orderBy('count', 'DESC')
             ->limit(5)
@@ -123,6 +139,8 @@ class HomeController extends Controller
             $label_customers[] = $name;
             $value_customers[] = $count;
         }
+
+        /* Chart template */
         $top_customers = [
             'labels' => $label_customers,
             'datasets' => [
@@ -144,22 +162,21 @@ class HomeController extends Controller
         return view('home', ['customers' => $customers, 'vehicles' => $vehicles, 'reviews' => $reviews, 'line_graph' => $line_graph, 'genders' => $gender_data, 'top_customers' => $top_customers]);
     }
 
-
+    /* Get total records on current date. */
     public function get_total_count_for_date($date)
     {
-        $auth_user = auth()->user()->id;
 
         $customers_count = Customers::select('id')->whereDate('customers.created_at', $date)
-            ->where('admin_id', $auth_user)->orderBy('id')->count();
+            ->where('admin_id', $this->auth_user)->orderBy('id')->count();
 
         $vehicles_count = Vehicles::whereDate('vehicles.created_at', $date)
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
         $reviews_count = Reviews::whereDate('reviews.created_at', $date)
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
         $total_count = $customers_count + $vehicles_count + $reviews_count;
 

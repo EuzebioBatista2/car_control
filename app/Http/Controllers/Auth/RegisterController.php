@@ -96,8 +96,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        Alert::success('Sucesso', 'Cadastro de admin realizado com sucesso.')->persistent(true, true);
+        Alert::success('Sucesso', 'Cadastro de administrador realizado com sucesso.')->persistent(true, true);
 
+        /* Format the name, lastname and email input */
         $capitalize_name = strtolower($data['name']);
         $capitalize_lastname = strtolower($data['lastname']);
         $capitalize_email = strtolower($data['email']);

@@ -9,71 +9,91 @@ use Illuminate\Support\Facades\Lang;
 
 class ExcelController extends Controller
 {
-    //
+    /* User ID at login */
+    private $auth_user;
+
+    public function __construct()
+    {
+        $this->auth_user = '';
+    }
+
+    /* Initial page */
     public function index()
     {
-        $auth_user = auth()->user()->id;
+        $this->auth_user = auth()->user()->id;
 
-        /* Table customers */
-        $customers_table = Customers::where('admin_id', $auth_user)
+        /* Query the last twenty customers in the table. */
+        $customers_table = Customers::where('admin_id', $this->auth_user)
             ->select('name', 'lastname', 'email', 'phone', 'age', 'gender')
             ->orderBy('id', 'asc')->limit(20)->get();
+
         $customers_columns = [];
 
+        /* Customer(s) exist? */
         if ($customers_table->count() > 0) {
+            /* Get the columns in the table */
             $customers_columns = array_keys($customers_table->first()->getAttributes());
 
             foreach ($customers_columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $customers_columns[$key] = ucfirst($translated_column);
                 } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $customers_columns[$key] = ucfirst($column);
                 }
             }
         }
 
-        /* Tavle vehicles */
+        /* Query the last twenty vehicles in the table. */
         $vehicles_table = Vehicles::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->limit(20)->get();
+
         $vehicles_columns = [];
 
+        /* Vehicles exist? */
         if ($vehicles_table->count() > 0) {
+            /* Get the columns in the table */
             $vehicles_columns = array_keys($vehicles_table->first()->getAttributes());
 
             foreach ($vehicles_columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $vehicles_columns[$key] = ucfirst($translated_column);
                 } else {
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $vehicles_columns[$key] = ucfirst($column);
                 }
             }
         }
 
-        /* Table reviews */
+        /* Query the last twenty reviews in the table. */
         $reviews_table = Reviews::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->limit(20)->get();
 
         $reviews_columns = [];
 
+        /* Reviews exist? */
         if ($reviews_table->count() > 0) {
+            /* Get the columns in the table */
             $reviews_columns = array_keys($reviews_table->first()->getAttributes());
 
             foreach ($reviews_columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $reviews_columns[$key] = ucfirst($translated_column);
                 } else {
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $reviews_columns[$key] = ucfirst($column);
                 }
             }

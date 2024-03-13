@@ -5,7 +5,7 @@ return [
   'lastname' => 'sobrenome',
   'phone' => 'Telefone',
   'age' => 'idade',
-  'gender' => 'sexo',
+  'gender' => 'gênero',
   'brand' => 'marca',
   'model' => 'modelo',
   'year' => 'ano',

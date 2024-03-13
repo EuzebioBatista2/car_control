@@ -16,13 +16,19 @@
           <form :action="route + '/' + review.vehicle_id + '/' + review.id"
             method="POST"
             class="form-container">
+
+            <!-- Token -->
             <input type="hidden"
               name="_token"
               :value="csrf_token">
+
+            <!-- Put method -->
             <input type="hidden"
               name="_method"
               value="PUT">
             <div class="item-container">
+
+              <!-- Review data -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="date_review"
@@ -41,6 +47,7 @@
                 </span>
               </div>
 
+              <!-- Completed -->
               <div class="mb-3">
                 <div class="form-check">
                   <input class="form-check-input"
@@ -53,8 +60,9 @@
                   </label>
                 </div>
               </div>
-
             </div>
+
+            <!-- Problems -->
             <div class="item-container">
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
@@ -101,6 +109,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -172,6 +181,7 @@ h4 {
   justify-content: end;
 }
 
+/* Media */
 @media (max-width: 990px) {
   .container {
     padding: 0px;

@@ -44,6 +44,7 @@ class Admins extends Authenticatable
         'password' => 'hashed',
     ];
 
+    /* Foreign key */
     public function customers() {
         return $this->hasMany('App\Models\Customers');
     } 

@@ -18,6 +18,9 @@
     integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- Icon -->
+  <link rel="icon" type="image/ico" href="{{ asset("icons/favicon.ico") }}">
+
   <!-- Style -->
   <link rel="stylesheet" href="{{ asset("css/styles.css") }}">
 
@@ -36,7 +39,7 @@
 
 <body>
   <div id="app">
-    <div class="container-fluid background-home" style="height: 100vh;">
+    <div class="container-fluid background-page" style="height: 100vh;">
       <main class="row h-100" style="position: relative">
         <aside class="h-100" id="menu-bar">
           <button id="toggle-button"><i class="fa-solid fa-chevron-left"></i></button>
@@ -78,7 +81,7 @@
             </div>
           </div>
         </aside>
-        <section class="col-12 bg-white content-all">
+        <section class="col-12 content-all">
           @yield("content")
         </section>
       </main>

@@ -10,6 +10,7 @@ class Brands extends Model
     use HasFactory;
     protected $fillable = ['brand'];
 
+    /* Foreign key */
     public function Models() {
         $this->hasMany('App\Models\Admins');
     }

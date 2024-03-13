@@ -8,7 +8,9 @@
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
       <div class="col-12 px-4">
-        <p>Para cadastrar o veiculos, o admin deverá ir na página <strong>CLIENTES</strong>, clicando em <strong>Veículos</strong> caso haja cadastro. Ou também pode clicar em <strong>Veículos</strong> na página <strong>VEÍCULOS</strong> caso tenha cadastro de cliente.</p>
+        <p>Para cadastrar o veiculos, o admin deverá ir na página <strong>CLIENTES</strong>, clicando em
+          <strong>Veículos</strong> caso haja cadastro. Ou também pode clicar em <strong>Veículos</strong> na página
+          <strong>VEÍCULOS</strong> caso tenha cadastro de cliente.</p>
       </div>
     </div>
     <div class="row"
@@ -19,17 +21,22 @@
           <div class="card-header links-header">
             <div class="link-header">
               <nav>
-                <form class="d-flex"
+                <form class="d-flex search-form"
                   role="search"
                   :action="route + '/search'"
                   method="GET">
-                  <input :class="'form-control me-2'"
-                    type="search"
-                    name="brand"
-                    placeholder="Consulte pela marca do veículo"
-                    v-model="old_search"
-                    :value="old_search"
-                    aria-label="Search">
+                  <!-- Search -->
+                  <select class="form-select"
+                    id="select"
+                    name="select">
+                    <option v-for="(column, key) in columns"
+                      :value="key"
+                      :selected="old_select === key">{{ column }}</option>
+                  </select>
+                  <input type="search"
+                    name="data"
+                    class="form-control"
+                    v-model="old_data">
                   <button class="btn btn-outline-danger"
                     type="submit">Pesquisar</button>
                 </form>
@@ -37,20 +44,26 @@
             </div>
           </div>
           <div class="card-body table-over">
-            <table v-if="columns && columns.length > 0"
+            <!-- Table columns -->
+            <table v-if="vehicles.data && Object.keys(vehicles.data).length > 0"
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
                   <th v-for="column in columns"
                     scope="col">{{ column }}</th>
+                  <th scope="col">Adicionar</th>
                 </tr>
               </thead>
               <tbody>
+                <!-- Table data -->
                 <tr v-for="vehicle in vehicles.data">
                   <th v-for="data in vehicle"
                     scope="row">
-                    <span v-if="vehicle.customer_id !== data"  class="data">{{ data }}</span>
-                    <a v-else :href="route + '/' + data" class="btn btn-primary">Veículos</a>  
+                    <span v-if="vehicle.customer_id !== data"
+                      class="data">{{ data }}</span>
+                    <a v-else
+                      :href="route + '/' + data"
+                      class="btn btn-primary">Veículos</a>
                   </th>
                 </tr>
               </tbody>
@@ -58,7 +71,8 @@
             <p v-else
               class="text-white">Não há dados cadastrados no momento ou informações não encontradas.</p>
           </div>
-          <div v-if="columns && columns.length > 0"
+          <!-- Paginate -->
+          <div v-if="vehicles.data && Object.keys(vehicles.data).length > 0"
             class="card-footer text-body-secondary container-footer">
             <nav aria-label="Page navigation">
               <ul class="pagination">
@@ -95,16 +109,18 @@
 <script>
 
 export default {
-  props: ['vehicles', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search'],
+  props: ['vehicles', 'columns', 'csrf_token', 'errors', 'old', 'route', 'search', 'select', 'data'],
   data() {
     return {
-      old_search: this.search ?? '',
+      old_data: this.data ?? '',
+      old_select: this.select === '' ? 'id' : this.select
     }
   },
 
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -128,6 +144,24 @@ h2 {
   margin: 0px;
 }
 
+.search-form {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-form input {
+  width: 50%;
+}
+
+.search-form button {
+  width: 25%;
+}
+
+.search-form select {
+  width: 20%;
+}
+
+/* Table */
 #table-container {
   display: flex;
   align-items: center;
@@ -156,7 +190,7 @@ h2 {
 }
 
 .link-header nav {
-  width: 400px;
+  width: 500px;
 }
 
 .add-button {
@@ -196,8 +230,7 @@ h2 {
   padding: inherit;
 }
 
-
-
+/* Media */
 @media(max-width: 767px) {
   .add-button button {
     width: 100%;
@@ -209,6 +242,18 @@ h2 {
 
   .container {
     padding: 0px;
+  }
+
+  .search-form button {
+    width: 100%;
+  }
+
+  .search-form select {
+    width: 100%;
+  }
+
+  .search-form input {
+    width: 100%;
   }
 }
 </style>

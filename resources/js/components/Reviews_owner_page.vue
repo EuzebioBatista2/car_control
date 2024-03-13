@@ -14,6 +14,7 @@
           <!-- User content -->
           <h4 class="w-100"><i class="fa-solid fa-user mx-2"></i> Dados do usuário/veículo</h4>
           <div class="input-items">
+
             <!-- Name -->
             <div class="mb-3">
               <div class="d-flex w-100 justify-content-start">
@@ -68,6 +69,7 @@
 
           </div>
           <div class="input-items">
+
             <!-- Email -->
             <div class="mb-3">
               <div class="d-flex w-100 justify-content-start">
@@ -135,11 +137,15 @@
                   role="search"
                   :action="route + '/search_owner/' + vehicle.id"
                   method="GET">
+
+                  <!-- Initial date -->
                   <input class="form-control search-item"
                     type="datetime-local"
                     name="initial_date"
                     id="initial_date"
                     aria-label="initial date">
+
+                  <!-- Final date  -->
                   <input class="form-control search-item"
                     type="datetime-local"
                     name="final_date"
@@ -180,13 +186,18 @@
                   <div class="modal-body">
                     <form :action="route + '/' + vehicle.id"
                       method="POST">
+
+                      <!-- Token -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
 
+                      <!-- Vehicle ID -->
                       <input type="hidden"
                         name="vehicle_id"
                         :value="vehicle.id">
+
+                      <!-- Name -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="name"
@@ -199,6 +210,7 @@
                           readonly />
                       </div>
 
+                      <!-- Brand -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="brand"
@@ -211,6 +223,7 @@
                           readonly />
                       </div>
 
+                      <!-- Model -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="model"
@@ -223,6 +236,7 @@
                           readonly />
                       </div>
 
+                      <!-- Year -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="year"
@@ -235,6 +249,7 @@
                           readonly />
                       </div>
 
+                      <!-- Color -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="color"
@@ -247,6 +262,7 @@
                           readonly />
                       </div>
 
+                      <!-- Problems found -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
                           <label for="problems"
@@ -282,6 +298,7 @@
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
+                  <!-- Table columns -->
                   <th v-for="column in columns"
                     scope="col" :style="column === 'Problemas' ? 'max-width: 400px;' : ''">
                     {{ column }}
@@ -290,6 +307,7 @@
                 </tr>
               </thead>
               <tbody>
+                <!-- Table data -->
                 <tr v-for="review in reviews.data">
                   <th v-for="data in review"
                     scope="row">
@@ -318,9 +336,12 @@
                       method="POST"
                       class="d-inline"
                       onsubmit="return confirm('Tem certeza que deseja excluir este item?');">
+                      <!-- Token -->
                       <input type="hidden"
                         name="_token"
                         :value="csrf_token">
+
+                      <!-- Delete method -->
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
@@ -336,6 +357,8 @@
             <p v-else
               class="text-white">Não há dados cadastrados no momento ou informações não encontradas.</p>
           </div>
+
+          <!-- Paginate -->
           <div v-if="columns && columns.length > 0"
             class="card-footer text-body-secondary container-footer">
             <nav aria-label="Page navigation">
@@ -399,6 +422,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -437,6 +461,7 @@ h2 {
   flex-grow: 1;
 }
 
+/* Table */
 #table-container {
   display: flex;
   align-items: center;
@@ -515,6 +540,7 @@ h2 {
   padding: inherit;
 }
 
+/* Media */
 @media(max-width: 990px) {
   .add-button button {
     width: 100%;

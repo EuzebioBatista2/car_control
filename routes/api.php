@@ -19,6 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+/* Vehicle api */
 Route::get('vehicles-data', [VehiclesDataController::class, 'index']);
+
+/* Model api */
 Route::get('models/', [VehiclesDataController::class, 'models']);
 Route::get('models/{brand}', [VehiclesDataController::class, 'models']);

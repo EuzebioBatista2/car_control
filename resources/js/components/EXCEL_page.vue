@@ -1,6 +1,15 @@
 <template>
   <div class="container"
     ref="data">
+    <div class="success">
+      <p>Excel baixado com sucesso</p>
+      <p>pode fechar a guia do navegador.</p>
+      <img src="/gif/Success.gif"
+        alt="Confirmando o download"
+        height="100"
+        width="100">
+      <p>ou clique aqui: <a :href="route_dashboard">Página inicial</a></p>
+    </div>
     <div class="row"
       style="padding: 0px 10px;">
       <div class="col-12 px-4"
@@ -13,6 +22,7 @@
       </div>
       <div class="col-12 table-values">
         <div class="table-over">
+          <!-- Table columns -->
           <table v-if="customers_columns && customers_columns.length > 0"
             class="table-color"
             ref="customers_table">
@@ -22,6 +32,7 @@
                   class="th-td text-table-th">Lista de clientes cadastrados</th>
               </tr>
               <tr>
+                <!-- Table data -->
                 <th v-for="column in customers_columns"
                   class="th-td text-table-th"
                   scope="col">{{ column }}</th>
@@ -47,6 +58,7 @@
 
       <div class="col-12 table-values">
         <div class="table-over">
+          <!-- Table columns -->
           <table v-if="vehicles_columns && vehicles_columns.length > 0"
             class="table-color"
             ref="vehicles_table">
@@ -62,6 +74,7 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Table data -->
               <tr v-for="customer in vehicles_table">
                 <td v-for="data in customer"
                   scope="row"
@@ -79,6 +92,7 @@
       <div class="col-12 table-values">
 
         <div class="table-over">
+          <!-- Table columns -->
           <table v-if="reviews_columns && reviews_columns.length > 0"
             class="table-color"
             ref="reviews_table">
@@ -86,7 +100,6 @@
               <tr>
                 <th colspan="7"
                   class="th-td text-table-th">Lista de revisões cadastradas</th>
-                {{ console.log(reviews_table) }}
               </tr>
               <tr>
                 <th v-for="column in reviews_columns"
@@ -126,40 +139,43 @@ export default {
     'vehicles_columns',
     'reviews_table',
     'reviews_columns',
-    'route_dashboard'
+    'route_dashboard',
   ],
   methods: {
     is_date(value) {
       return moment(value, 'YYYY-MM-DD HH:mm:ss', true).isValid();
     },
+
     format_date(date) {
       return moment(date).format('DD/MM/YYYY HH:mm:ss');
     },
+
     async generate_excel() {
       const workbook = new ExcelJS.Workbook();
 
-      // Adicione uma folha para cada tabela
-      const customersSheet = workbook.addWorksheet('Clientes');
-      const vehiclesSheet = workbook.addWorksheet('Veículos');
-      const reviewsSheet = workbook.addWorksheet('Revisões');
+      /* Creating page */
+      const customers_sheet = workbook.addWorksheet('Clientes');
+      const vehicles_sheet = workbook.addWorksheet('Veículos');
+      const reviews_sheet = workbook.addWorksheet('Revisões');
 
-      // Função para adicionar dados de uma tabela a uma folha
-      const addDataToSheet = (sheet, data, columns, title) => {
-        // Adicione os cabeçalhos das colunas
+      const add_data_to_sheet = (sheet, data, columns, title) => {
+        /* Add title and style */
         const title_data = sheet.addRow(title)
         sheet.mergeCells(1, 1, 1, columns.length);
         title_data.font = { bold: true, size: 14 };
+
+        /* Add columns */
         const columns_data = sheet.addRow(columns);
         columns_data.font = { bold: true };
 
-        // Adicione os dados
+        /* Formating data */
         data.forEach(row => {
-          const rowData = [];
+          const row_data = [];
 
           for (const key in row) {
             let value = row[key];
 
-            // Traduza os valores específicos, se necessário
+            /* Translate the specific values, if necessary */
             if (key === 'gender') {
               if (value === 'M') {
                 value = 'Masculino';
@@ -178,23 +194,17 @@ export default {
               value = this.format_date(row[key])
             }
 
-            rowData.push(value); // Adicione o valor à linha
+            row_data.push(value); /* Add row */
           }
 
-          sheet.addRow(rowData); // Adicione a linha à planilha
+          sheet.addRow(row_data); /* Add row */
         });
 
-        // Estilize a planilha
-        const lastRowNumber = sheet.rowCount;
-        const lastColumnLetter = columns[columns.length - 1];
-
-        // Centralize o texto
+        /* Centered text */
         sheet.eachRow({ includeEmpty: false }, function (row) {
           row.alignment = { vertical: 'middle', horizontal: 'center' };
         });
 
-        // Aplique bordas
-        const range = `A1:${lastColumnLetter}${lastRowNumber}`;
         const borders = {
           top: { style: 'thin' },
           left: { style: 'thin' },
@@ -209,38 +219,36 @@ export default {
 
         // Auto ajuste de colunas
         sheet.columns.forEach(column => {
-          const maxLength = column.values.reduce((acc, val) => {
-            const valueLength = val ? val.toString().length : 0;
-            return Math.max(acc, valueLength);
+          const max_length = column.values.reduce((acc, val) => {
+            const value_length = val ? val.toString().length : 0;
+            return Math.max(acc, value_length);
           }, 0);
-          column.width = maxLength < 20 ? 20 : maxLength; // Defina uma largura mínima
+          column.width = max_length < 20 ? 20 : max_length; /* Automatic column adjustment */
         });
       };
 
-      // Adicione os dados de cada tabela às folhas correspondentes
-      addDataToSheet(customersSheet, this.customers_table, this.customers_columns, ['Lista de clientes cadastrados']);
-      addDataToSheet(vehiclesSheet, this.vehicles_table, this.vehicles_columns, ['Lista de veículos cadastrados']);
-      addDataToSheet(reviewsSheet, this.reviews_table, this.reviews_columns, ['Lista de revisões cadastradas']);
+      /* Add formatted data */
+      add_data_to_sheet(customers_sheet, this.customers_table, this.customers_columns, ['Lista de clientes cadastrados']);
+      add_data_to_sheet(vehicles_sheet, this.vehicles_table, this.vehicles_columns, ['Lista de veículos cadastrados']);
+      add_data_to_sheet(reviews_sheet, this.reviews_table, this.reviews_columns, ['Lista de revisões cadastradas']);
 
-      // Escreva o arquivo Excel para um buffer
+      /* Write file */
       const buffer = await workbook.xlsx.writeBuffer();
 
-      // Crie um blob a partir do buffer
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-      // Crie um URL do blob
       const url = window.URL.createObjectURL(blob);
 
-      // Crie um link e clique nele para baixar o arquivo Excel
+      /* Create link and click on it to download the file */
       const a = document.createElement('a');
       a.href = url;
       a.download = 'vehicles_control.xlsx';
       a.click();
 
-      // Libere o URL do blob
+      // Release the blob url
       window.URL.revokeObjectURL(url);
 
-      // Exiba a mensagem de sucesso, se necessário
+      /* Update da loading */
       $('.loading').css('display', 'none');
       $('.success').css('display', 'flex');
     }
@@ -252,6 +260,7 @@ export default {
 </script>
 
 <style scoped>
+/* container */
 .container {
   position: relative;
 }

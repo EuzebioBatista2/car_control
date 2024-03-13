@@ -1,6 +1,15 @@
 <template>
   <div class="container"
     ref="data">
+    <div class="success">
+      <p>PDF baixado com sucesso</p>
+      <p>pode fechar a guia do navegador.</p>
+      <img src="/gif/Success.gif"
+        alt="Confirmando o download"
+        height="100"
+        width="100">
+      <p>ou clique aqui: <a :href="route_dashboard">Página inicial</a></p>
+    </div>
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
@@ -102,12 +111,14 @@
             class="table-color">
             <thead>
               <tr>
+                <!-- Table columns -->
                 <th v-for="column in customers_columns"
                   class="th-td text-table-th"
                   scope="col">{{ column }}</th>
               </tr>
             </thead>
             <tbody>
+              <!-- Table data -->
               <tr v-for="customer in customers_table">
                 <td v-for="data in customer"
                   class="th-td text-table-td"
@@ -179,6 +190,7 @@
             class="table-color">
             <thead>
               <tr>
+                <!-- Table columns -->
                 <th v-for="column in reviews_columns"
                   class="th-td text-table-th"
                   scope="col">{{ column }}</th>
@@ -186,6 +198,7 @@
             </thead>
             <tbody>
               <tr v-for="customer in reviews_table">
+                <!-- Table data -->
                 <td v-for="data in customer"
                   class="th-td text-table-td"
                   scope="row">
@@ -216,6 +229,7 @@
 
 <script>
 import jsPDF from 'jspdf';
+
 export default {
   props: [
     'customers_graph',
@@ -331,6 +345,7 @@ export default {
 </script>
 
 <style scoped>
+/* Container */
 #container-title {
   display: inline-flex;
   align-items: center;
@@ -352,6 +367,7 @@ h2 {
   font-size: 28px;
 }
 
+/* Chart */
 #graph-container {
   display: flex;
   width: 100%;

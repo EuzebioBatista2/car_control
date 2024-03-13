@@ -36,6 +36,8 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 
 /* Auth pages */
 Route::middleware(['auth'])->group(function () {
+    
+    /* Dashboard route */
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
     /* Customers route */

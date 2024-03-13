@@ -30,7 +30,7 @@ export default {
 }
 </script>
 <style scoped>
-
+/* Container */
 #logo-img {
   display: flex;
   width: auto;
@@ -58,6 +58,7 @@ export default {
   margin: 0;
 }
 
+/* Media */
 @media (max-width: 480px) {
   .font-home {
     font-size: 30px;

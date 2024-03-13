@@ -11,26 +11,41 @@ use Illuminate\Support\Facades\Lang;
 
 class PdfController extends Controller
 {
-    //
+    /* User ID at login */
+    private $auth_user;
+
+    public function __construct()
+    {
+        $this->auth_user = '';
+    }
+
+    /* Initial page */
     public function index()
     {
-        $auth_user = auth()->user()->id;
+        $this->auth_user = auth()->user()->id;
 
-        /* Value graph */
-        $customers_graph = Customers::select('id')->where('admin_id', $auth_user)->count();
+        /* Query the number of the customers. */
+        $customers_graph = Customers::select('id')->where('admin_id', $this->auth_user)->count();
+
+        /* Query the number of the vehicles. */
         $vehicles_graph = Vehicles::select('id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
+
+        /* Query the number of the reviews. */
         $reviews_graph = Reviews::select('id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
+        /* Date. */
         $current_date = Carbon::now();
 
+        /* Query the records of the last 7 days. */
         for ($i = 0; $i < 7; $i++) {
             $date = $current_date->clone()->subDays($i)->toDateString();
 
+            /* Return the total records. */
             $total_count = $this->get_total_count_for_date($date);
 
             $date_formated = date('d-m', strtotime($date));
@@ -44,11 +59,14 @@ class PdfController extends Controller
 
         $labels = [];
         $values = [];
+
+        /* Format the data in the graph */
         foreach ($dates as $item) {
             $labels[] = $item['date'];
             $values[] = $item['total_records'];
         }
 
+        /* Chart template */
         $line_graph = [
             'labels' => $labels,
             'datasets' => [
@@ -62,13 +80,14 @@ class PdfController extends Controller
             ]
         ];
 
+        /* The number of the genders */
         $genders_values = [];
         $genders = Customers::select(
             DB::raw("SUM(CASE WHEN gender = 'M' THEN 1 ELSE 0 END) AS Masculino"),
             DB::raw("SUM(CASE WHEN gender = 'F' THEN 1 ELSE 0 END) AS Feminino"),
             DB::raw("SUM(CASE WHEN gender = 'N' THEN 1 ELSE 0 END) AS Não_informado")
         )
-            ->where('customers.admin_id', $auth_user)
+            ->where('customers.admin_id', $this->auth_user)
             ->first()
             ->getAttributes();
 
@@ -76,6 +95,7 @@ class PdfController extends Controller
             $genders_values[] = $gender;
         }
 
+        /* Chart template */
         $genders_graph = [
             'labels' => ['Masculino', 'Feminino', 'Não definido'],
             'datasets' => [
@@ -90,9 +110,10 @@ class PdfController extends Controller
             ]
         ];
 
+        /* Query the top five customers with the most vehicles records */
         $customers_count = Customers::select('customers.name', DB::raw('COUNT(vehicles.customer_id) as count'))
             ->leftJoin('vehicles', 'customers.id', '=', 'vehicles.customer_id')
-            ->where('customers.admin_id', $auth_user)
+            ->where('customers.admin_id', $this->auth_user)
             ->groupBy('customers.name')
             ->orderBy('count', 'DESC')
             ->limit(5)
@@ -108,6 +129,7 @@ class PdfController extends Controller
             $value_customers[] = $count;
         }
 
+        /* Chart template */
         $top_customers_graph = [
             'labels' => $label_customers,
             'datasets' => [
@@ -126,8 +148,8 @@ class PdfController extends Controller
             ]
         ];
 
-        /* Table customers */
-        $customers_table = Customers::where('admin_id', $auth_user)
+        /* Query the last twenty customers in the table */
+        $customers_table = Customers::where('admin_id', $this->auth_user)
             ->select('name', 'lastname', 'email', 'phone', 'age', 'gender')
             ->orderBy('id', 'asc')->limit(20)->get();
         $customers_columns = [];
@@ -138,46 +160,50 @@ class PdfController extends Controller
             foreach ($customers_columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $customers_columns[$key] = ucfirst($translated_column);
                 } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $customers_columns[$key] = ucfirst($column);
                 }
             }
         }
 
-        /* Tavle vehicles */
+        /* Query the last twenty vehicles in the table */
         $vehicles_table = Vehicles::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->limit(20)->get();
         $vehicles_columns = [];
 
+        /* Table columns. */
         if ($vehicles_table->count() > 0) {
             $vehicles_columns = array_keys($vehicles_table->first()->getAttributes());
 
             foreach ($vehicles_columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $vehicles_columns[$key] = ucfirst($translated_column);
                 } else {
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $vehicles_columns[$key] = ucfirst($column);
                 }
             }
         }
 
-        /* Table reviews */
+        /* Query the last twenty reviews in the table */
         $reviews_table = Reviews::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->limit(20)->get();
 
         $reviews_columns = [];
 
+        /* Table columns. */
         if ($reviews_table->count() > 0) {
             $reviews_columns = array_keys($reviews_table->first()->getAttributes());
 
@@ -210,21 +236,21 @@ class PdfController extends Controller
 
     }
 
+    /* Get total records on current date. */
     public function get_total_count_for_date($date)
     {
-        $auth_user = auth()->user()->id;
 
         $customers_count = Customers::whereDate('created_at', $date)
-            ->where('admin_id', $auth_user)->count();
+            ->where('admin_id', $this->auth_user)->count();
 
         $vehicles_count = Vehicles::whereDate('vehicles.created_at', $date)
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
         $reviews_count = Reviews::whereDate('reviews.created_at', $date)
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->where('customers.admin_id', $auth_user)->count();
+            ->where('customers.admin_id', $this->auth_user)->count();
 
         $total_count = $customers_count + $vehicles_count + $reviews_count;
 

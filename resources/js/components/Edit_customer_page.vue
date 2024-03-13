@@ -16,12 +16,17 @@
           <form :action="route + '/' + customer.id"
             method="POST"
             class="form-container">
+            <!-- Token -->
             <input type="hidden"
               name="_token"
               :value="csrf_token">
+
+            <!-- Put method -->
             <input type="hidden"
               name="_method"
               value="PUT">
+            
+            <!-- Name -->
             <div class="item-container">
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
@@ -42,6 +47,7 @@
                 </span>
               </div>
 
+              <!-- Lastname -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="lastname"
@@ -61,10 +67,11 @@
                 </span>
               </div>
 
+              <!-- Gender -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="gender"
-                    class="form-label d-inline-flex mx-2 mb-1">Sexo:</label>
+                    class="form-label d-inline-flex mx-2 mb-1">Gênero:</label>
                 </div>
                 <select class="form-select"
                   :class="errors.gender ? 'form-control is-invalid' : 'form-control'"
@@ -83,8 +90,9 @@
                   <strong>{{ errors.gender[0] }}</strong>
                 </span>
               </div>
-
             </div>
+
+            <!-- Email -->
             <div class="item-container">
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
@@ -105,6 +113,7 @@
                 </span>
               </div>
 
+              <!-- Phone number -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="phone"
@@ -127,6 +136,7 @@
                 </span>
               </div>
 
+              <!-- Age -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="age"
@@ -163,6 +173,7 @@
 </template>
 
 <script>
+/* Phone input */
 import Inputmask from 'inputmask';
 
 export default {
@@ -187,6 +198,7 @@ export default {
 }
 </script>
 <style scoped>
+/* Container */
 .container {
   display: flex;
   flex-direction: column;
@@ -257,6 +269,7 @@ h4 {
   justify-content: end;
 }
 
+/* Media */
 @media (max-width: 576px) {
   .container {
     padding: 0px;

@@ -11,6 +11,7 @@ class Reviews extends Model
     use HasFactory;
     protected $fillable = ['date_review', 'problems', 'completed', 'vehicle_id'];
 
+    /* Foreign key */
     public function vehicles() {
         return $this->belongsTo('App\Models\Vehicles');
     }

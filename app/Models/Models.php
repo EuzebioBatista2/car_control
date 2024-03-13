@@ -10,6 +10,7 @@ class Models extends Model
     use HasFactory;
     protected $fillable = ['brand_id', 'model'];
 
+    /* Foreign key */
     public function Brands() {
         $this->belongsTo('App\Models\Brands');
     }

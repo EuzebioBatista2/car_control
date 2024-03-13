@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customers;
 use App\Models\Reviews;
 use App\Models\Vehicles;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -13,81 +14,107 @@ use Illuminate\Support\Facades\Lang;
 
 class ReviewsController extends Controller
 {
-    //
+    /* User ID at login */
+    private $auth_user;
+
+    public function __construct()
+    {
+        $this->auth_user = '';
+    }
+
+    /* Initial page */
     public function index()
     {
-        $auth_user = auth()->user()->id;
+
+        $this->auth_user = auth()->user()->id;
+
+        /* Query the last five reviews(paginete) with user ID. */
         $reviews = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->orderBy('name', 'asc')->paginate(5);
+
         $columns = [];
 
-        if ($reviews->count() > 0) {
-            $columns = array_keys($reviews->first()->getAttributes());
+        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems')
+            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->first()
+            ->getAttributes();
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        /* Columns table */
+        $columns_query = array_keys($reviews_columns);
+
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                /* If the traduce exists, replace the column name with formatted name. */
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                /* If the traduce don't exists, capitalize the first letter of the word. */
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('reviews', ['reviews' => $reviews, 'columns' => $columns, 'search' => '']);
+        return view('reviews', ['reviews' => $reviews, 'columns' => $columns, 'select' => '', 'data' => '']);
     }
 
+    /* Inital page with ID */
     public function index_owner_review($id)
     {
-        $auth_user = auth()->user()->id;
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Is the ID integer? */
         if (!(intval($id) == $id)) {
             return redirect()->route('reviews');
         }
 
+        /* Query the first vehicle with the user ID and the vehicle ID. */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the vehicle ID is different from the id  */
         if ($vehicle && $vehicle['id'] != $id) {
             return view('access_denied');
         }
 
-
+        /* Query the last five reviews(paginete) with the user ID and the vehicle ID. */
         $reviews = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('reviews.vehicle_id', "$id")
             ->orderBy('date_review', 'asc')->paginate(5);
+
         $columns = [];
 
+        /* Table columns. */
         if ($reviews->count() > 0) {
             $columns = array_keys($reviews->first()->getAttributes());
 
             foreach ($columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $columns[$key] = ucfirst($translated_column);
                 } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $columns[$key] = ucfirst($column);
                 }
             }
         }
 
+        /* Format date */
         $current_date = date('Y-m-d\TH:i');
 
         return view('reviews_owner', ['reviews' => $reviews, 'vehicle' => $vehicle, 'columns' => $columns, 'old_date' => '', 'date' => $current_date]);
@@ -110,6 +137,7 @@ class ReviewsController extends Controller
 
     public function create(Request $request, int $id)
     {
+        /* Verify if the data is valid. */
         $this->validator($request->all())->validate();
 
         Reviews::create([
@@ -127,34 +155,39 @@ class ReviewsController extends Controller
     public function edit($id_vehicle, $id_review)
     {
 
-        $auth_user = auth()->user()->id;
+        $this->auth_user = auth()->user()->id;
 
+        /* Verify if the id_vehicle is integer. */
         if (!(intval($id_vehicle) == $id_vehicle)) {
             return redirect()->route('owner_review', ['id' => $id_vehicle]);
         }
 
+        /* Query the first vehicle by id_vehicle */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id_vehicle")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the vehicle ID is different from the id_vehicle  */
         if ($vehicle && $vehicle['id'] != $id_vehicle) {
             return view('access_denied');
         }
 
+        /* Query the first review with the user ID and the vehicle ID. */
         $review = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('reviews.vehicle_id', "$id_vehicle")
             ->where('reviews.id', "$id_review")
             ->first()
             ->getAttributes();
 
+        /* Format date */
         $review['date_review'] = substr($review['date_review'], 0, 10) . 'T' . substr($review['date_review'], 11, 5);
 
         if ($vehicle) {
@@ -166,44 +199,54 @@ class ReviewsController extends Controller
 
     public function update(Request $request, $id_vehicle, $id_review)
     {
-        $auth_user = auth()->user()->id;
+        $this->auth_user = auth()->user()->id;
 
+        /* Verify if the data is valid. */
+        $this->validator($request->all())->validate();
+
+        /* Is the ID integer? */
         if (!(intval($id_vehicle) == $id_vehicle)) {
             return redirect()->route('owner_review', ['id' => $id_vehicle]);
         }
 
+        /* Query the first vehicle with the user ID and the vehicle ID. */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id_vehicle")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the vehicle ID is different from the id_vehicle */
         if ($vehicle && $vehicle['id'] != $id_vehicle) {
             return view('access_denied');
         }
 
+        /* Query the first reviews with the user ID and the vehicle ID. */
         $review = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
+            ->where('customers.admin_id', "$this->auth_user")
             ->where('reviews.vehicle_id', "$id_vehicle")
             ->where('reviews.id', "$id_review")
             ->first();
 
-        /* Fomat data */
+        /* Format date */
         $review['date_review'] = substr($review['date_review'], 0, 10) . 'T' . substr($review['date_review'], 11, 5);
+
+        /* Format completed input */
         $format_completed = $request->input('completed') ? '1' : '0';
 
         if ($review) {
+            /* Verify if the reviewed query is different from the requested data. */
             if (
                 $review['date_review'] === $request->input('date_review') &&
                 $review['completed'] === $format_completed &&
                 $review['problems'] == $request->input('problems')
             ) {
-                Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
+                Alert::warning('Aviso', 'Preencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
                 return redirect()->route('owner_review', ['id' => $id_vehicle]);
             }
 
@@ -223,25 +266,31 @@ class ReviewsController extends Controller
 
     public function destroy($id_vehicle, $id_review)
     {
-        $auth_user = auth()->user()->id;
 
+        $this->auth_user = auth()->user()->id;
+
+        /* Is the ID integer? */
         if (!(intval($id_vehicle) == $id_vehicle)) {
             return redirect()->route('owner_review', ['id' => $id_vehicle]);
         }
 
+        /* Query the first review with the user ID and the vehicle ID. */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id_vehicle")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the vehicle ID is different from the id_vehicle  */
         if ($vehicle && $vehicle['id'] != $id_vehicle) {
             return view('access_denied');
         }
 
+        /* Query the first review by ID */
         $review = Reviews::where('id', $id_review)->first();
+
         if ($review) {
             Alert::success('Sucesso', 'Cadastro de revisão excluído com sucesso!')->persistent(true, true);
             $review->delete();
@@ -254,67 +303,92 @@ class ReviewsController extends Controller
 
     public function search(Request $request)
     {
-        $auth_user = auth()->user()->id;
 
-        $query = $request->input('brand');
+        $select = $request->input('select');
+        $data = $request->input('data');
 
+        $this->auth_user = auth()->user()->id;
+
+        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems')
+            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->first()
+            ->getAttributes();
+
+        /* Select don't macha the customers_columns */
+        if (!in_array($select, array_keys($reviews_columns))) {
+            return view('access_denied');
+        }
+
+        if($select === "name") {
+            $query_select = "customers." . $select;
+        } else if($select === "brand" || $select === "model" || $select === "year" || $select === "color") {
+            $query_select = "vehicles." . $select;
+        } else {
+            $query_select = "reviews." . $select;
+        }
+
+        /* Query the last five reviews(paginate) with User ID and query */
         $reviews = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->where('customers.admin_id', "$auth_user")
-            ->where('vehicles.brand', "ilike", '%' . $query . '%')
+            ->where('customers.admin_id', "$this->auth_user")
+            ->where("$query_select", "ilike", '%' . $data . '%')
             ->orderBy('name', 'asc')->paginate(5);
 
         $columns = [];
 
-        if ($reviews->count() > 0) {
-            $columns = array_keys($reviews->first()->getAttributes());
+        /* Table columns */
+        $columns_query = array_keys($reviews_columns);
 
-            foreach ($columns as $key => $column) {
-                $translated_column = Lang::get("messages.$column");
-                if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
-                    $columns[$key] = ucfirst($translated_column);
-                } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
-                    $columns[$key] = ucfirst($column);
-                }
+        foreach ($columns_query as $column) {
+            $translated_column = Lang::get("messages.$column");
+            if ($translated_column !== "messages.$column") {
+                // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                $columns[$column] = ucfirst($translated_column);
+            } else {
+                // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                $columns[$column] = ucfirst($column);
             }
         }
 
-        return view('reviews', ['reviews' => $reviews, 'columns' => $columns, 'search' => $query]);
+        return view('reviews', ['reviews' => $reviews, 'columns' => $columns, 'data' => $data, 'select' => $select]);
     }
 
     public function search_owner(Request $request, $id)
     {
+        $this->auth_user = auth()->user()->id;
+
         $initial_date = $request->input('initial_date');
         $final_date = $request->input('final_date');
 
-        $auth_user = auth()->user()->id;
-
+        /* Is the ID integer? */
         if (!(intval($id) == $id)) {
             return redirect()->route('reviews');
         }
 
+        /* Query the first vehicle with the ID and the User ID */
         $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id")
-            ->where('admins.id', "$auth_user")
+            ->where('admins.id', "$this->auth_user")
             ->first()
             ->getAttributes();
 
+        /* If the vehicle ID is different from the id_vehicle */
         if ($vehicle && $vehicle['id'] != $id) {
             return view('access_denied');
         }
 
-
+        /* Query the last five reviews(paginate) with User ID and query */
         $reviews = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', 'vehicles.id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', 'admins.id')
-            ->where('customers.admin_id', $auth_user)
+            ->where('customers.admin_id', $this->auth_user)
             ->where('reviews.vehicle_id', $id);
 
         if ($initial_date != '') {
@@ -328,21 +402,23 @@ class ReviewsController extends Controller
 
         $columns = [];
 
+        /* Table columns */
         if ($reviews->count() > 0) {
             $columns = array_keys($reviews->first()->getAttributes());
 
             foreach ($columns as $key => $column) {
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
-                    // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                    /* If the traduce exists, replace the column name with formatted name. */
                     $columns[$key] = ucfirst($translated_column);
                 } else {
-                    // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                    /* If the traduce don't exists, capitalize the first letter of the word. */
                     $columns[$key] = ucfirst($column);
                 }
             }
         }
 
+        /* Format date */
         $current_date = date('Y-m-d\TH:i');
 
         return view('reviews_owner', ['reviews' => $reviews, 'vehicle' => $vehicle, 'columns' => $columns, 'old_date' => $initial_date, 'date' => $current_date]);

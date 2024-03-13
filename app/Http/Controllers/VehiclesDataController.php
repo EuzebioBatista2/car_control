@@ -9,7 +9,7 @@ use App\Models\TypeOfFuel;
 
 class VehiclesDataController extends Controller
 {
-    //
+    /* Initial API */
     public function index()
     {
         $brands = Brands::select('brand')->pluck('brand')->toArray();
@@ -24,6 +24,7 @@ class VehiclesDataController extends Controller
         $type_of_fuel = TypeOfFuel::select('type_of_fuel')->pluck('type_of_fuel')->toArray();
         $content_vehicles['type_of_fuels'] = $type_of_fuel;
 
+        /* Selecting data */
         return response()->json($content_vehicles);
     }
 
@@ -35,6 +36,8 @@ class VehiclesDataController extends Controller
             $models = Models::select('model')->where('brand_id', $brand_id['id'])->pluck('model')->toArray();
             $content_brands['models'] = $models;
         }
+
+        /* Relationship with selected input. */
         return response()->json($content_brands);
     }
 }
