@@ -1,4 +1,4 @@
-<p align="center"><img src="./public/img/logo.png" width="400" alt="Logo do car control"></p>
+<p align="center"><img src="./public/img/Logo.png" width="400" alt="Logo do car control"></p>
 
 ## Sobre projeto
 
@@ -69,6 +69,8 @@ php artisan server
 
 ## Atualizações
 
+* 1.0.1 - 📝 Update ReadMe.md
+    * Update src
 * 1.0.0 - ✨ First version
     * Releasing first version
     * Update ReadME.md
