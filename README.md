@@ -34,13 +34,13 @@ Este projeto representa meu trabalho pessoal em um sistema de controle de veícu
 
 ## Instalação
 
-> Servidor VueJS:
+> Pacotes VueJS:
 
 ```sh
 npm install
 ```
 
-> Servidor Laravel:
+> Pacotes Laravel:
 
 ```sh
 composer install
@@ -60,6 +60,21 @@ npm run dev
 php artisan server
 ```
 
+## Configurando Dusk
+
+> Execute o seguinte comando:
+```sh
+php artisan dusk:install
+```
+
+> Em caso de erro na execução do comando, na pasta "bin" na raiz deste projeto, se encontra um certificado, no qual deve-se ser inserido em: C:\caminho\php\php_versão\extras\ssl (Modifique o caminho, inserindo o local onde se encontra o pasta extras\ssl correta do PHP)
+
+> Após colar o certificado, localize o arquivo php.ini no seu computador, abra com algum editor de texto e no final do arquivo insira a seguinte linha:
+```sh
+curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
+```
+> (Lembrando de colocar o caminho correto onde se encontra pasta extras\ssl do PHP)
+
 ## Imagens do projeto
 
 <p align="center"><img src="./public/project/Page_one.png" alt="Página login"></p>
@@ -69,6 +84,10 @@ php artisan server
 
 ## Atualizações
 
+* 1.0.2 - 📝 Initial tests
+    * Creating tests
+    * Add bin file
+    * How to configure the dusk lib in ReadMe.md
 * 1.0.1 - 📝 Update ReadMe.md
     * Update src
 * 1.0.0 - ✨ First version
