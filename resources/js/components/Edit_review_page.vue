@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><i class="fa-solid fa-user"></i> VEÍCULOS</h2>
+        <h2><i class="fa-solid fa-address-book mx-2"></i> REVISÕES</h2>
       </div>
     </div>
     <div class="row"

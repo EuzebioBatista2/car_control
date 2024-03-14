@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><i class="fa-solid fa-user"></i> VEÍCULOS</h2>
+        <h2><i class="fa-solid fa-car mx-2"></i> VEÍCULOS</h2>
       </div>
     </div>
     <div class="row"
@@ -191,7 +191,7 @@
 <script>
 
 export default {
-  props: ['vehicle', 'customer', 'csrf_token', 'errors', 'old', 'route'],
+  props: ['vehicle', 'customer', 'csrf_token', 'errors', 'old', 'route', 'url_route'],
   data() {
     return {
       old_brand: this.old.brand ?? this.vehicle.brand  ?? '',
@@ -207,7 +207,7 @@ export default {
   methods: {
     /* Fill in the vehicle selection input */
     fetch_data() {
-      fetch('http://localhost:8000/api/vehicles-data')
+      fetch(`${this.url_route}/api/vehicles-data`)
         .then(response => response.json())
         .then(data => {
           this.vehicles_data = data;
@@ -220,7 +220,7 @@ export default {
     /* Select the old brand if it exists. */
     fill_select(brand) {
       $.ajax({
-        url: `http://localhost:8000/api/models/${brand}`,
+        url: `${this.url_route}/api/models/${brand}`,
         method: 'GET',
         success: (data) => {
           this.old_brand = brand;

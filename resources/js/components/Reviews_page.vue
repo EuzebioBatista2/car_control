@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><i class="fa-solid fa-address-book"></i> REVISÃO</h2>
+        <h2><i class="fa-solid fa-address-book mx-2"></i> REVISÃO</h2>
         <a href="/vehicles"
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>

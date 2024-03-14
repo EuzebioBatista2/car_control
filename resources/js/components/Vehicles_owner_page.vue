@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><i class="fa-solid fa-car"></i> PROPRIETÁRIO DOS VEÍCULOS</h2>
+        <h2><i class="fa-solid fa-car mx-2"></i> PROPRIETÁRIO DOS VEÍCULOS</h2>
         <a :href="route"
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
@@ -382,7 +382,7 @@
 <script>
 
 export default {
-  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'select', 'data', 'route_review'],
+  props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'select', 'data', 'route_review', 'url_route'],
   data() {
     return {
       old_brand: this.old.brand ?? '',
@@ -400,7 +400,7 @@ export default {
   methods: {
     /* Fill in the brand input */
     fetch_data() {
-      fetch('http://localhost:8000/api/vehicles-data')
+      fetch(`${this.url_route}/api/vehicles-data`)
         .then(response => response.json())
         .then(data => {
           this.vehicles_data = data;
@@ -413,7 +413,7 @@ export default {
     /* Fill in the model input */
     fill_select(brand) {
       $.ajax({
-        url: `http://localhost:8000/api/models/${brand}`,
+        url: `${this.url_route}/api/models/${brand}`,
         method: 'GET',
         success: (data) => {
           this.old_brand = brand;

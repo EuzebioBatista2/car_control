@@ -8,7 +8,7 @@
           <vehicles-owner-page :vehicles="{{ json_encode($vehicles) }}" :customer="{{ json_encode($customer) }}" :columns="{{ json_encode($columns) }}"
             csrf_token="{{ @csrf_token() }}" :errors="{{ $errors->toJson() }}" :old="{{ json_encode(old()) }}"
             :route="{{ json_encode(route("vehicles")) }}" :route_review="{{ json_encode(route("reviews")) }}" :select="{{ json_encode($select) }}"
-            :data="{{ json_encode($data) }}"></vehicles-owner-page>
+            :data="{{ json_encode($data) }}" :url_route="{{ json_encode(route('welcome'))}}"></vehicles-owner-page>
         </div>
       </div>
     </div>

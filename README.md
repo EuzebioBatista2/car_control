@@ -67,6 +67,12 @@ php artisan server
 php artisan dusk:install
 ```
 
+```sh
+php artisan dusk:chrome-driver
+```
+
+> No arquivo .env, em APP_URL, Modifique para: APP_URL=http://127.0.0.1:8000
+
 > Em caso de erro na execução do comando, na pasta "bin" na raiz deste projeto, se encontra um certificado, no qual deve-se ser inserido em: C:\caminho\php\php_versão\extras\ssl (Modifique o caminho, inserindo o local onde se encontra o pasta extras\ssl correta do PHP)
 
 > Após colar o certificado, localize o arquivo php.ini no seu computador, abra com algum editor de texto e no final do arquivo insira a seguinte linha:
@@ -84,6 +90,10 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.0.3 - 📝 Update tests and styles
+    * Update comments
+    * Update icons
+    * Update How to configure the dusk lib in ReadMe.md
 * 1.0.2 - 📝 Initial tests
     * Creating tests
     * Add bin file
