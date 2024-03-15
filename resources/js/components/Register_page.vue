@@ -94,7 +94,7 @@
             placeholder="Insira sua senha..."
             :value="old_password"
             v-model="old_password"
-            autocomplete="new-password">
+            autocomplete="password">
           <button type="button"
             class="password-eye-button eye-icon"
             @click.prevent="toggle_pass_button()">
@@ -116,7 +116,7 @@
             placeholder="Confirme sua senha..."
             v-model="old_confirm_password"
             :value="old_confirm_password"
-            autocomplete="new-password">
+            autocomplete="password_confirmation">
           <button type="button"
             class="confirm-password-eye-button eye-icon"
             @click.prevent="toggle_confirm_pass_button()">

@@ -51,10 +51,13 @@ class RegisterController extends Controller
     {
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
         
+        $data['email'] = strtolower($data['email']);
+        $data['email'] = ucfirst($data['email']);
+
         return Validator::make($data, [
             'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç]+$/'],
             'lastname' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
-            'email' => ['required', 'string', 'min:8', 'max:100', 'email', 'unique:admins'],
+            'email' => ['required', 'string', 'unique:admins,email', 'min:8', 'max:100', 'email'],
             'password' => ['required', 'string', 'min:8', 'max:20', 'confirmed', 'regex:/^(?=.*[!@#$])(?=.*[0-9].*[0-9].*[0-9])(?=.*[a-z])(?=.*[A-Z])/'],
         ], [
             /* Name */

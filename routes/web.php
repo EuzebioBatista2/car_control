@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomersController;
@@ -36,6 +37,12 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 
 /* Auth pages */
 Route::middleware(['auth'])->group(function () {
+
+    /* Account route */
+    Route::get('/account', [AccountController::class, 'index'])->name('account');
+    Route::put('/account/informations', [AccountController::class, 'update_informations'])->name('informations');
+    Route::put('/account/password', [AccountController::class, 'updade_password'])->name('password');
+    Route::delete('/account/delete', [AccountController::class, 'destroy'])->name('delete');
     
     /* Dashboard route */
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');

@@ -67,6 +67,11 @@
                   @if (Route::currentRouteName() === "reviews") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
                   <i class="fa-solid fa-address-book link-dash"></i> REVISÕES
                 </a>
+
+                <a href="{{ route("account") }}"
+                  @if (Route::currentRouteName() === "account") class="text-white link-dash link-disabled" onclick="return false;" @else class="link-gray link-dash" @endif>
+                  <i class="fa-solid fa-user-tie"></i></i> CONTA
+                </a>
               </nav>
             </div>
             <div class="menu-link w-100 secondary-link">

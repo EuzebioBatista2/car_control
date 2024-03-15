@@ -61,6 +61,9 @@ app.component('pdf-page', PDF_page);
 import EXCEL_page from './components/EXCEL_page.vue';
 app.component('excel-page', EXCEL_page);
 
+import Account_page from './components/Account_page.vue';
+app.component('account-page', Account_page);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

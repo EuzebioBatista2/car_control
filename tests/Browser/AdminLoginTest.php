@@ -6,20 +6,20 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class RegisterUserTest extends DuskTestCase
+class AdminLoginTest extends DuskTestCase
 {
     /**  @test */
     public function check_if_root_site_is_correct(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
-                    ->assertSee('CONHEÇA MAIS SOBRE')
-                    ->assertSee('NOSSAS FUNÇÕES');
+                ->assertSee('CONHEÇA MAIS SOBRE')
+                ->assertSee('NOSSAS FUNÇÕES');
         });
     }
 
     /**  @test */
-    public function check_if_login_function_is_not_working()
+    public function check_login_function_with_wrong_password()
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
