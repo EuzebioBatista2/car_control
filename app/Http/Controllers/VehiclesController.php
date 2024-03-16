@@ -28,15 +28,15 @@ class VehiclesController extends Controller
         $this->auth_user = auth()->user()->id;
 
         /* Query the last five vehicles(paginate) in the table */
-        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel', 'customers.id as customer_id')
+        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'customers.id as customer_id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
-            ->orderBy('name', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(5);
 
         $columns = [];
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->first()
@@ -82,17 +82,17 @@ class VehiclesController extends Controller
         }
 
         /* Query the last five vehicles(paginate) in the table */
-        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
-            ->orderBy('name', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(5);
 
         $columns = [];
 
         /* Columns table */
-        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->first()
@@ -120,6 +120,7 @@ class VehiclesController extends Controller
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
 
         return Validator::make($data, [
+            'plate' => ['required', 'string', 'max:8', 'min:8', 'regex:/^[A-Za-z]{3}-[0-9]{1}[A-Za-z0-9]{1}[0-9]{2}$/'],
             'brand' => ['required', 'string',],
             'model' => ['required', 'string'],
             'year' => ['required', 'integer', 'min:1950', 'max:2024'],
@@ -127,6 +128,13 @@ class VehiclesController extends Controller
             'steering_system' => ['required', 'string'],
             'type_of_fuel' => ['required', 'string']
         ], [
+            /* Plate */
+            'plate.required' => 'O campo placa deve ser preenchido.',
+            'plate.string' => 'Placa deve ser do tipo TEXTO',
+            'plate.max' => 'Placa acima do limite permitido, max:8.',
+            'plate.min' => 'Placa abaixo do limite permitido, min:8.',
+            'plate.regex' => 'Fomato inválido, a placa deve possuir o seguinte formato: ABC-1A23 ou ABC-1234.',
+
             /* Brand */
             'brand.required' => 'O campo marca deve ser preenchido.',
             'brand.string' => 'Marca deve ser do tipo TEXTO',
@@ -161,7 +169,11 @@ class VehiclesController extends Controller
         /* Verify if the data is valid. */
         $this->validator($request->all())->validate();
 
+        /* Format plate */
+        $formated_plate = strtoupper($request->input('plate'));
+
         Vehicles::create([
+            'plate' => $formated_plate,
             'brand' => $request->input('brand'),
             'model' => $request->input('model'),
             'year' => $request->input('year'),
@@ -200,7 +212,7 @@ class VehiclesController extends Controller
         }
 
         /* Query the first vehicle with the user ID, vehicle ID and the id_customer. */
-        $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicle = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
@@ -247,6 +259,7 @@ class VehiclesController extends Controller
         if ($vehicle) {
             /* Verify if the vehicle query is different from the requested data. */
             if (
+                $vehicle['plate'] === $request->input('plate') &&
                 $vehicle['brand'] === $request->input('brand') &&
                 $vehicle['model'] === $request->input('model') &&
                 $vehicle['year'] == $request->input('year') &&
@@ -257,7 +270,12 @@ class VehiclesController extends Controller
                 Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
                 return redirect()->route('owner', ['id' => $id_customer]);
             }
+
+            /* Format plate */
+            $formated_plate = strtoupper($request->input('plate'));
+
             $vehicle->update([
+                'plate' => $formated_plate,
                 'brand' => $request->input('brand'),
                 'model' => $request->input('model'),
                 'year' => $request->input('year'),
@@ -329,7 +347,7 @@ class VehiclesController extends Controller
 
         $this->auth_user = auth()->user()->id;
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->first()
@@ -343,12 +361,12 @@ class VehiclesController extends Controller
         $query_select = $select === "name" ? "customers." . $select : "vehicles." . $select;
 
         /* Query the last five vehicles(paginate) with User ID and query */
-        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel', 'customers.id as customer_id')
+        $vehicles = Vehicles::select('vehicles.id', 'vehicles.plate',  'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'customers.id as customer_id')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
             ->where("$query_select", "ilike", '%' . $data . '%')
-            ->orderBy('name', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(5);
 
         $columns = [];
 
@@ -382,7 +400,7 @@ class VehiclesController extends Controller
             return redirect()->route('vehicles');
         }
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->first()
@@ -409,13 +427,13 @@ class VehiclesController extends Controller
         $query_select = $select === "name" ? "customers." . $select : "vehicles." . $select;
 
         /* Query the last five vehicles(paginate) with User ID and query */
-        $vehicles = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
             ->where("$query_select", "ilike", '%' . $data . '%')
-            ->orderBy('name', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(5);
 
         $columns = [];
 

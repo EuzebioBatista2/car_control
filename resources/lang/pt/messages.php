@@ -16,5 +16,6 @@ return [
   'date_review' => 'data de cadastro',
   'problems' => 'problemas',
   'completed' => 'Concluído',
-  'vehicle_id' => 'id de veículo'
+  'vehicle_id' => 'id de veículo',
+  'plate' => 'placa'
 ];

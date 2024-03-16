@@ -161,7 +161,13 @@ export default {
       const add_data_to_sheet = (sheet, data, columns, title) => {
         /* Add title and style */
         const title_data = sheet.addRow(title)
-        sheet.mergeCells(1, 1, 1, columns.length);
+
+        /* Verify if the columns exists */
+        if(columns.length == 0) {
+          sheet.mergeCells(1, 1, 1, 7);
+        } else {
+          sheet.mergeCells(1, 1, 1, columns.length);
+        }
         title_data.font = { bold: true, size: 14 };
 
         /* Add columns */

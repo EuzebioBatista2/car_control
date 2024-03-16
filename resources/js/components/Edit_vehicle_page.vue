@@ -27,8 +27,31 @@
               name="_method"
               value="PUT">
 
-            <!-- Brand -->
             <div class="item-container">
+              <!-- Plate -->
+              <div class="mb-3">
+                <div class="d-flex w-100 justify-content-start">
+                  <label for="plate"
+                    class="form-label d-inline-flex mx-2 mb-1">Placa:</label>
+                </div>
+                <input type="text"
+                  :class="errors.plate ? 'form-control is-invalid' : 'form-control'"
+                  id="plate"
+                  v-model="old_plate"
+                  :value="old_plate"
+                  ref="plate"
+                  name="plate"
+                  maxlength="8"
+                  autocomplete="off"
+                  placeholder="Insira a placa do carro...">
+                <span v-if="errors.plate"
+                  class="invalid-feedback"
+                  role="alert">
+                  <strong>{{ errors.plate[0] }}</strong>
+                </span>
+              </div>
+
+              <!-- Brand -->
               <div class="mb-3">
                 <div class="d-flex w-100 justify-content-start">
                   <label for="brand"
@@ -194,11 +217,12 @@ export default {
   props: ['vehicle', 'customer', 'csrf_token', 'errors', 'old', 'route', 'url_route'],
   data() {
     return {
-      old_brand: this.old.brand ?? this.vehicle.brand  ?? '',
+      old_plate: this.old.plate ?? this.vehicle.plate ?? '',
+      old_brand: this.old.brand ?? this.vehicle.brand ?? '',
       old_model: this.old.model ?? this.vehicle.model ?? '',
-      old_year:  this.old.year ?? this.vehicle.year ?? '',
+      old_year: this.old.year ?? this.vehicle.year ?? '',
       old_color: this.old.color ?? this.vehicle.color ?? '',
-      old_steering_system: this.old.steering_system ??this.vehicle.steering_system ?? '',
+      old_steering_system: this.old.steering_system ?? this.vehicle.steering_system ?? '',
       old_type_of_fuel: this.old.type_of_fuel ?? this.vehicle.type_of_fuel ?? '',
       vehicles_data: [],
       models_data: []
@@ -226,7 +250,7 @@ export default {
           this.old_brand = brand;
           $('#model').empty();
           $('#model').append(`<option value="" ${this.old_model === '' ? 'selected' : ''}>Selecione</option>`);
-          if(data.models) {
+          if (data.models) {
             data.models.forEach(model => {
               $('#model').append(`<option value="${model}" ${this.old_model === model ? 'selected' : ''}>${model}</option>`);
             });
@@ -240,7 +264,7 @@ export default {
   },
   mounted() {
     this.fetch_data();
-    
+
     $(this.$refs.brand).select2({
       width: '100%'
     });
@@ -263,9 +287,15 @@ export default {
       this.fill_select(selected_brand);
     });
 
-    if(this.old_brand !== '') {
+    if (this.old_brand !== '') {
       this.fill_select(this.old_brand);
     }
+
+    Inputmask({
+      regex: "^[A-Za-z]{3}-[0-9]{1}[A-Za-z0-9]{1}[0-9]{2}$",
+      placeholder: "___-____",
+      showMaskOnHover: true,
+    }).mask(this.$refs.plate);
   }
 
 }

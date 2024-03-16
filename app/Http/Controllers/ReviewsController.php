@@ -29,7 +29,7 @@ class ReviewsController extends Controller
         $this->auth_user = auth()->user()->id;
 
         /* Query the last five reviews(paginete) with user ID. */
-        $reviews = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
+        $reviews = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.plate', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
@@ -38,7 +38,7 @@ class ReviewsController extends Controller
 
         $columns = [];
 
-        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems')
+        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.plate', 'reviews.date_review', 'reviews.problems')
             ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
@@ -74,7 +74,7 @@ class ReviewsController extends Controller
         }
 
         /* Query the first vehicle with the user ID and the vehicle ID. */
-        $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color')
+        $vehicle = Vehicles::select('vehicles.id', 'customers.name', 'customers.lastname', 'customers.email', 'customers.phone', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.plate')
             ->leftJoin('customers', 'vehicles.customer_id', '=', "customers.id")
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('vehicles.id', "$id")

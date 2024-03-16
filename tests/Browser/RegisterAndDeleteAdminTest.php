@@ -5,7 +5,7 @@ namespace Tests\Browser;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
-class AdminRegisterTest extends DuskTestCase
+class RegisterAndDeleteAdminTest extends DuskTestCase
 {
     /**  @test */
     public function check_if_root_site_is_correct(): void
@@ -30,6 +30,17 @@ class AdminRegisterTest extends DuskTestCase
                 ->type('password_confirmation', '123456Teste@')
                 ->press('Registrar')
                 ->assertPathIs('/dashboard');
+        });
+    }
+
+    /**  @test */
+    public function check_if_register_is_deleted()
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->visit('/account')
+                ->press('Deletar conta')
+                ->acceptDialog()
+                ->assertPathIs('/login');
         });
     }
 }

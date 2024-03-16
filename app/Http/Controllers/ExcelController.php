@@ -47,7 +47,7 @@ class ExcelController extends Controller
         }
 
         /* Query the last twenty vehicles in the table. */
-        $vehicles_table = Vehicles::select('customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
+        $vehicles_table = Vehicles::select('customers.name', 'vehicles.brand', 'vehicles.plate', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")

@@ -90,6 +90,10 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.1.0 - ✨ Tests coverage and new column
+    * New Plate column
+    * Dusk finished
+    * Updated Ids on pages
 * 1.0.4 - 📝 Create account page
     * Add: delete account
     * Add: update password

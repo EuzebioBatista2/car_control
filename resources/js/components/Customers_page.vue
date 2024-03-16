@@ -237,7 +237,7 @@
                       class="data">{{ data }}</span>
                   </th>
                   <th>
-                    <a :href="route + '/' + customer.id"
+                    <a :href="route + '/' + customer.id" id="button-edit"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + customer.id"
                       method="POST"
@@ -252,13 +252,13 @@
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
-                      <button type="submit"
+                      <button type="submit" id="button-delete"
                         class="btn btn-danger mx-1">
                         <i class="fa-solid fa-trash">
                         </i></button>
                     </form>
                   </th>
-                  <th><a :href="route_vehicle + '/' + customer.id"
+                  <th><a :href="route_vehicle + '/' + customer.id" id="vehicle-button"
                       class="btn btn-primary">Veículos</a></th>
                 </tr>
               </tbody>

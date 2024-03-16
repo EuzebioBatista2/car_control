@@ -109,16 +109,16 @@
                 readonly />
             </div>
 
-            <!-- color -->
+            <!-- Plate -->
             <div class="mb-3">
               <div class="d-flex w-100 justify-content-start">
-                <label for="color"
-                  class="form-label d-inline-flex mx-2 mb-1">Cor:</label>
+                <label for="plate"
+                  class="form-label d-inline-flex mx-2 mb-1">Placa:</label>
               </div>
               <input type="text"
                 class="form-control"
-                id="color"
-                :value="vehicle.color"
+                id="plate"
+                :value="vehicle.plate"
                 readonly />
             </div>
           </div>
@@ -330,7 +330,7 @@
                       class="data" style="overflow-wrap: break-word; max-width: 400px;margin: 0px auto;">{{ data }}</span>
                   </th>
                   <th>
-                    <a :href="route + '/' + vehicle.id + '/' + review.id"
+                    <a :href="route + '/' + vehicle.id + '/' + review.id" id="button-edit"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + vehicle.id + '/' + review.id"
                       method="POST"
@@ -345,7 +345,7 @@
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
-                      <button type="submit"
+                      <button type="submit" id="button-delete"
                         class="btn btn-danger mx-1">
                         <i class="fa-solid fa-trash">
                         </i></button>

@@ -135,6 +135,29 @@
                         name="_token"
                         :value="csrf_token">
 
+                      <!-- Plate -->
+                      <div class="mb-3">
+                        <div class="d-flex w-100 justify-content-start">
+                          <label for="plate"
+                            class="form-label d-inline-flex mx-2 mb-1">Placa:</label>
+                        </div>
+                        <input type="text"
+                          :class="errors.plate ? 'form-control is-invalid' : 'form-control'"
+                          id="plate"
+                          v-model="old_plate"
+                          :value="old_plate"
+                          ref="plate"
+                          name="plate"
+                          maxlength="8"
+                          autocomplete="off"
+                          placeholder="Insira a placa do carro...">
+                        <span v-if="errors.plate"
+                          class="invalid-feedback"
+                          role="alert">
+                          <strong>{{ errors.plate[0] }}</strong>
+                        </span>
+                      </div>
+
                       <!-- Brand -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
@@ -314,7 +337,7 @@
                     <span class="data">{{ data }}</span>
                   </th>
                   <th>
-                    <a :href="route + '/' + customer.id + '/' + vehicle.id"
+                    <a :href="route + '/' + customer.id + '/' + vehicle.id" id="button-edit"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + customer.id + '/' + vehicle.id"
                       method="POST"
@@ -330,12 +353,14 @@
                         name="_method"
                         value="DELETE">
                       <button type="submit"
+                        id="button-delete"
                         class="btn btn-danger mx-1">
                         <i class="fa-solid fa-trash">
                         </i></button>
                     </form>
                   </th>
                   <th><a :href="route_review + '/' + vehicle.id"
+                      id="review-button"
                       class="btn btn-primary">Revisões</a></th>
                 </tr>
               </tbody>
@@ -380,11 +405,14 @@
 </template>
 
 <script>
+/* Plate input */
+import Inputmask from 'inputmask';
 
 export default {
   props: ['vehicles', 'customer', 'columns', 'csrf_token', 'errors', 'old', 'route', 'select', 'data', 'route_review', 'url_route'],
   data() {
     return {
+      old_plate: this.old.plate ?? '',
       old_brand: this.old.brand ?? '',
       old_model: this.old.model ?? '',
       old_year: this.old.year ?? '2024',
@@ -465,6 +493,12 @@ export default {
       let selected_brand = $('#brand').val();
       this.fill_select(selected_brand);
     });
+
+    Inputmask({
+      regex: "^[A-Za-z]{3}-[0-9]{1}[A-Za-z0-9]{1}[0-9]{2}$",
+      placeholder: "___-____",
+      showMaskOnHover: true,
+    }).mask(this.$refs.plate);
   }
 
 }

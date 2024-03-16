@@ -96,8 +96,8 @@ class CustomersController extends Controller
             /* Age */
             'age.required' => 'O campo idade deve ser preenchido.',
             'age.integer' => 'Idade deve ser do tipo NÚMERICO',
-            'age.min' => 'Idade acima do limite permitido, min:18.',
-            'age.max' => 'Idade abaixo do limite permitido, max:100.',
+            'age.min' => 'Idade abaixo do limite permitido, min:18.',
+            'age.max' => 'Idade acima do limite permitido, max:100.',
             'age.digits_between' => 'A Idade deve ser um número entre 1 e 3 dígitos',
 
             /* Gender */
