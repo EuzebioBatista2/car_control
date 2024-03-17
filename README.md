@@ -90,51 +90,66 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.1.1 - 📝 Update the title on the excel page
+    * Update the row style in the title
+
 * 1.1.0 - ✨ Tests coverage and new column
     * New Plate column
     * Dusk finished
     * Updated Ids on pages
+
 * 1.0.4 - 📝 Create account page
     * Add: delete account
     * Add: update password
     * Add: edit informations
+
 * 1.0.3 - 📝 Update tests and styles
     * Update comments
     * Update icons
     * Update How to configure the dusk lib in ReadMe.md
+
 * 1.0.2 - 📝 Initial tests
     * Creating tests
     * Add bin file
     * How to configure the dusk lib in ReadMe.md
+
 * 1.0.1 - 📝 Update ReadMe.md
     * Update src
+
 * 1.0.0 - ✨ First version
     * Releasing first version
     * Update ReadME.md
     * Update comments
+
 * 0.5.0 - 📝 PDF and Excel page finished
     * Initial pages(PDF and Excel)
     * First style
     * Security / PDF and Excel model.
+
 * 0.4.0 - 📝 Review page finished
     * Initial page(Reviews)
     * First style
     * Security.
+
 * 0.3.1 - 📝 Vehicles page finished.
     * Select input.
+
 * 0.3.0 - 📝 Add vehicles page
     * Initial page(Vehicles)
     * First style
     * Security.
+
 * 0.2.0 - 📝 Add dashboard and customers page
     * Initial pages(Dashboard and customers)
     * Charts
     * First style
     * Security and Alert.
+
 * 0.1.0 - 📝 Add: Login, register and home page.
     * Initial pages(Login, register and home)
     * First style
     * Authenticate and security.
+
 * 0.0.1 - 🎉 First commit
     * Initial project.
 

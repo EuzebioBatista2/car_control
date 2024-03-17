@@ -14,6 +14,11 @@
       style="padding: 0px 10px;">
       <div class="col-12 px-4"
         id="container-table">
+        <img src="/img/Logo.png"
+          alt="Confirmando o download"
+          height="100"
+          width="100"
+          ref="logo">
         <h2><img src="/icons/table-cells-large-solid.png"
             alt="Ícone de tabela"
             class="me-2 d-inline-flex"
@@ -153,22 +158,69 @@ export default {
     async generate_excel() {
       const workbook = new ExcelJS.Workbook();
 
-      /* Creating page */
+      /* Get image source */
+      const logoSrc = this.$refs.logo.src;
+
+      /* Convert image to base64 */
+      const base64Image = await fetch(logoSrc)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        }));
+
+      /* Inserting image */
+      const imageId = workbook.addImage({
+        base64: base64Image,
+        extension: 'png',
+      });
+
+      /* Creating pages */
       const customers_sheet = workbook.addWorksheet('Clientes');
       const vehicles_sheet = workbook.addWorksheet('Veículos');
       const reviews_sheet = workbook.addWorksheet('Revisões');
 
       const add_data_to_sheet = (sheet, data, columns, title) => {
-        /* Add title and style */
-        const title_data = sheet.addRow(title)
+
+        /* Add row */
+        const title_data = sheet.addRow()
+
+        /* Add image */
+        sheet.addImage(imageId, {
+          tl: { col: 0.3, row: 0 },
+          ext: { width: 100, height: 100 },
+        });
+        
+        /* Get column B */
+        const title_cell = title_data.getCell(2)
+        title_cell.value = title
+        title_cell.font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } };
+
+
+        /* Set height of title row */
+        title_data.height = 75;
+
+        let total_columns = 6
 
         /* Verify if the columns exists */
-        if(columns.length == 0) {
-          sheet.mergeCells(1, 1, 1, 7);
+        if (columns.length == 0) {
+          sheet.mergeCells(1, 2, 1, total_columns);
         } else {
-          sheet.mergeCells(1, 1, 1, columns.length);
+          total_columns = columns.length
+          sheet.mergeCells(1, 2, 1, total_columns);
         }
-        title_data.font = { bold: true, size: 14 };
+
+        /* Apply background-color only to columns with data */
+        for (let i = 1; i <= total_columns; i++) {
+          const cell = title_data.getCell(i);
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF262626' }
+          };
+        }
 
         /* Add columns */
         const columns_data = sheet.addRow(columns);
@@ -223,7 +275,7 @@ export default {
           });
         });
 
-        // Auto ajuste de colunas
+        /* Ajust columns */
         sheet.columns.forEach(column => {
           const max_length = column.values.reduce((acc, val) => {
             const value_length = val ? val.toString().length : 0;
@@ -234,9 +286,9 @@ export default {
       };
 
       /* Add formatted data */
-      add_data_to_sheet(customers_sheet, this.customers_table, this.customers_columns, ['Lista de clientes cadastrados']);
-      add_data_to_sheet(vehicles_sheet, this.vehicles_table, this.vehicles_columns, ['Lista de veículos cadastrados']);
-      add_data_to_sheet(reviews_sheet, this.reviews_table, this.reviews_columns, ['Lista de revisões cadastradas']);
+      add_data_to_sheet(customers_sheet, this.customers_table, this.customers_columns, 'Lista de clientes cadastrados');
+      add_data_to_sheet(vehicles_sheet, this.vehicles_table, this.vehicles_columns, 'Lista de veículos cadastrados');
+      add_data_to_sheet(reviews_sheet, this.reviews_table, this.reviews_columns, 'Lista de revisões cadastradas');
 
       /* Write file */
       const buffer = await workbook.xlsx.writeBuffer();
