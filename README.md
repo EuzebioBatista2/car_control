@@ -90,6 +90,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.1.2 - 🧪 New API test 
+    * Refactoring the vehicle_data controller for the test
+
 * 1.1.1 - 📝 Update the title on the excel page
     * Update the row style in the title
 
