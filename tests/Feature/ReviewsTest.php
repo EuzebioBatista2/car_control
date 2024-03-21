@@ -161,18 +161,44 @@ class ReviewsTest extends TestCase
 
         $review = Reviews::factory()->create();
 
-        $vehicle_data = [
+        $review_data = [
             'vehicle_id' => $review->vehicle_id,
             'problems' => 'New test problem',
             'date_review' => date('Y-m-d H:i:s'),
             'completed' => '1',
         ];
 
-        /* Create customer */
-        $response = $this->put("/reviews/$review->vehicle_id/$review->id", $vehicle_data);
+        /* Update review */
+        $response = $this->put("/reviews/$review->vehicle_id/$review->id", $review_data);
 
         $response->assertStatus(302)
             ->assertRedirect("/reviews/$review->vehicle_id");
+    }
+
+    /** @test */
+    public function check_if_the_completing_task_function_on_reviews_page_is_working()
+    {
+        /* Login in */
+        $this->post('/login', [
+            'email' => 'Teste@teste.com',
+            'password' => '123456Teste@'
+        ]);
+
+        $review = Reviews::factory()->create();
+
+        $review_data = [
+            'value' => '1',
+        ];
+
+        /* Update completed column */
+        $response = $this->post("/reviews/task/$review->id", $review_data);
+
+        $response->assertStatus(200);
+
+        /* Id wrong */
+        $response = $this->post("/reviews/task/test", $review_data);
+
+        $response->assertStatus(200);
     }
 
     /** @test */
@@ -185,10 +211,28 @@ class ReviewsTest extends TestCase
 
         $review = Reviews::factory()->create();
 
+        /* Correct ID*/
         $response = $this->delete("/reviews/$review->vehicle_id/$review->id");
-
         $response->assertStatus(302)
             ->assertRedirect("/reviews/$review->vehicle_id");
+
+        /* String vehicle ID*/
+        $response = $this->delete("/reviews/test/$review->id");
+        $response->assertStatus(302)
+            ->assertRedirect("/reviews");
+
+        /* String review ID*/
+        $response = $this->delete("/reviews/$review->vehicle_id/test");
+        $response->assertStatus(302)
+            ->assertRedirect("/reviews/$review->vehicle_id");
+
+        /* Wrong vehicle ID*/
+        $response = $this->delete("/reviews/999999/$review->id");
+        $response->assertStatus(200);
+
+        /* Wrong review ID*/
+        $response = $this->delete("/reviews/$review->vehicle_id/9999999");
+        $response->assertStatus(200);
     }
 
     /** @test */
@@ -293,7 +337,7 @@ class ReviewsTest extends TestCase
         $response = $this->get("/reviews/search_owner/test?" . http_build_query($search_date));
         $response->assertStatus(302)
             ->assertRedirect("/reviews");
-        
+
         /* Date wrong */
         $response = $this->get("/reviews/search_owner/$review->vehicle_id?" . http_build_query($wrong_search_date));
         $response->assertStatus(200);

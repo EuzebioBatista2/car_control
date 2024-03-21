@@ -8,7 +8,10 @@
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
       <div class="col-12 px-4">
-        <p>Para sinalizar que a revisão foi concluída, basta marca a opção referente aos dados do veículo na coluna <strong>CONCLUÍDO</strong>.</p>
+        <p>Para cadastrar o revisões, o Admin deverá ir na página <strong>VEÍCULOS</strong>, clicando em
+          <strong>Revisões</strong>. Caso haja cadastro de revisões o Admin também pode clicar em <strong>Revisão</strong> na página
+          <strong>REVISÕES</strong>.
+        </p>
       </div>
     </div>
     <div class="row"

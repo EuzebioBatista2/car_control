@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* Home page */
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 /* Login page */
@@ -34,7 +35,6 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 /* Register page */
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
-
 /* Auth pages */
 Route::middleware(['auth'])->group(function () {
 
@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/account/informations', [AccountController::class, 'update_informations'])->name('informations');
     Route::put('/account/password', [AccountController::class, 'updade_password'])->name('password');
     Route::delete('/account/delete', [AccountController::class, 'destroy'])->name('delete');
-    
+
     /* Dashboard route */
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
@@ -67,6 +67,7 @@ Route::middleware(['auth'])->group(function () {
 
     /* Reviews route */
     Route::get('/reviews', [ReviewsController::class, 'index'])->name('reviews');
+    Route::post('/reviews/task/{id}', [ReviewsController::class, 'completed_task'])->name('completed_task');
     Route::get('/reviews/search', [ReviewsController::class, 'search'])->name('search_review');
     Route::get('/reviews/search_owner/{id}', [ReviewsController::class, 'search_owner'])->name('search_vehicles_review');
     Route::get('/reviews/{id}', [ReviewsController::class, 'index_owner_review'])->name('owner_review');

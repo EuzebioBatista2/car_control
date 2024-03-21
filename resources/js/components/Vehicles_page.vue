@@ -8,9 +8,9 @@
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
       <div class="col-12 px-4">
-        <p>Para cadastrar o veiculos, o admin deverá ir na página <strong>CLIENTES</strong>, clicando em
-          <strong>Veículos</strong> caso haja cadastro. Ou também pode clicar em <strong>Veículos</strong> na página
-          <strong>VEÍCULOS</strong> caso tenha cadastro de cliente.
+        <p>Para cadastrar o veiculos, o Admin deverá ir na página <strong>CLIENTES</strong>, clicando em
+          <strong>Veículos</strong>. Caso haja cadastro de veículo o Admin também pode clicar em <strong>Veículos</strong> na página
+          <strong>VEÍCULOS</strong>.
         </p>
       </div>
     </div>

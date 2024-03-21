@@ -213,7 +213,7 @@ class ReviewsController extends Controller
 
         /* Format date */
         $review['date_review'] = substr($review['date_review'], 0, 10) . 'T' . substr($review['date_review'], 11, 5);
-        
+
         return view('edit_review', ['review' => $review]);
     }
 
@@ -287,13 +287,38 @@ class ReviewsController extends Controller
         return redirect()->route('owner_review', ['id' => $id_vehicle]);
     }
 
+    public function completed_task(Request $request, $id)
+    {
+        /* Is the ID integer? */
+        if (!(intval($id) == $id)) {
+            return view('access_denied');
+        }
+
+        $value = $request->input('value');
+
+        /* Query the first reviews with the user ID and the vehicle ID. */
+        $review = Reviews::where('id', $id)
+            ->first();
+
+        $review->update([
+            'completed' => $value,
+        ]);
+
+        /* return redirect()->route('owner_review', ['id' => $vehicle_id]); */
+    }
+
     public function destroy($id_vehicle, $id_review)
     {
 
         $this->auth_user = auth()->user()->id;
 
-        /* Is the ID integer? */
+        /* Is the vehicle ID integer? */
         if (!(intval($id_vehicle) == $id_vehicle)) {
+            return redirect()->route('reviews');
+        }
+
+        /* Is the review ID integer? */
+        if (!(intval($id_review) == $id_review)) {
             return redirect()->route('owner_review', ['id' => $id_vehicle]);
         }
 
@@ -314,14 +339,31 @@ class ReviewsController extends Controller
             return view('access_denied');
         }
 
+        /* Query the first review with the user ID and the vehicle ID. */
+        $review = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed', 'vehicles.id as vehicle_id')
+            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
+            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
+            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
+            ->where('customers.admin_id', "$this->auth_user")
+            ->where('reviews.vehicle_id', "$id_vehicle")
+            ->where('reviews.id', "$id_review")
+            ->first();
+
+        if ($review) {
+            $review->getAttributes();
+        }
+
+        /* If the review ID isn't from the user  */
+        if ($review === null) {
+            return view('access_denied');
+        }
+
         /* Query the first review by ID */
         $review = Reviews::where('id', $id_review)->first();
 
         if ($review) {
             Alert::success('Sucesso', 'Cadastro de revisão excluído com sucesso!')->persistent(true, true);
             $review->delete();
-        } else {
-            Alert::error('Erro', 'Infelizmente não foi possivel excluir o registro selecionado.')->persistent(true, true);
         }
 
         return redirect()->route('owner_review', ['id' => $id_vehicle]);
@@ -342,7 +384,7 @@ class ReviewsController extends Controller
             ->first()
             ->getAttributes();
 
-        /* Select don't macha the customers_columns */
+        /* Select don't match the customers_columns */
         if (!in_array($select, array_keys($reviews_columns))) {
             return view('access_denied');
         }
@@ -372,10 +414,10 @@ class ReviewsController extends Controller
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
             if ($translated_column !== "messages.$column") {
-                // Se a tradução existe, substitue a coluna pelo seu equivalente traduzido
+                /* If the traduce exists, replace the column name with formatted name. */
                 $columns[$column] = ucfirst($translated_column);
             } else {
-                // Se a tradução não existe, capitaliza a primeira letra e substitua a coluna
+                /* If the traduce don't exists, capitalize the first letter of the word. */
                 $columns[$column] = ucfirst($column);
             }
         }

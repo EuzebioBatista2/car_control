@@ -7,6 +7,9 @@
         <a :href="route"
           class="back-link"><i class="fa-solid fa-left-long"></i></a>
       </div>
+      <div class="col-12 px-4">
+        <p>Para sinalizar que a revisão foi concluída, basta marca a opção referente aos dados do veículo na coluna <strong>CONCLUÍDO</strong>. Ou pode editar-la na opção <strong>Editar</strong></p>
+      </div>
     </div>
     <div class="row">
       <div class="col-12">
@@ -319,13 +322,15 @@
                       <input type="checkbox"
                         class="form-check-input"
                         checked
-                        disabled>
+                        :ref="'checkbox-' + review.id"
+                        @click="completing_task(review.id, '0', 'Tem certeza que deseja marcar essa atividade como não concluída?')">
                     </span>
                     <span v-else-if="data === '0'"
                       class="data">
                       <input type="checkbox"
                         class="form-check-input"
-                        disabled>
+                        :ref="'checkbox-' + review.id"
+                        @click="completing_task(review.id, '1', 'Tem certeza que deseja marcar essa atividade como concluída?')">
                     </span>
                     <span v-else
                       class="data"
@@ -365,7 +370,8 @@
           <!-- Paginate -->
           <div v-if="reviews.data && Object.keys(reviews.data).length > 0"
             class="card-footer text-body-secondary container-footer">
-            <nav aria-label="Page navigation" class="nav-page">
+            <nav aria-label="Page navigation"
+              class="nav-page">
               <ul class="pagination">
                 <li v-for="page in reviews.links"
                   :key="page"
@@ -411,6 +417,28 @@ export default {
     },
     format_date(date) {
       return moment(date).format('DD/MM/YYYY HH:mm:ss');
+    },
+    completing_task(id, value, message) {
+
+      if (confirm(message)) {
+
+        const form_data = new FormData();
+        form_data.append('value', value);
+
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-CSRF-TOKEN': this.csrf_token,
+            'Accept': 'application/json'
+          }
+        };
+
+        axios.post(`${this.route}/task/${id}`, form_data, config)
+      }
+
+      let checkbox = 'checkbox-' + id
+      let array = this.$refs[checkbox]
+      value === '1' ? array[0].checked = false : array[0].checked = true
     }
   },
   mounted() {

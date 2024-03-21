@@ -90,6 +90,10 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.1 - 📝🧪 New function for completed column
+    * New function for completed column on review page
+    * Updated test coverage
+
 * 1.2.0 - 🩹📝🧪 Test coverage and pages fix/update 
     * Fixed the pagination in the table
     * Finished the first test coverage
