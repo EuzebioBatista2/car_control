@@ -434,11 +434,14 @@ export default {
         };
 
         axios.post(`${this.route}/task/${id}`, form_data, config)
+      } else {
+
+        let checkbox = 'checkbox-' + id
+        let array = this.$refs[checkbox]
+        value === '1' ? array[0].checked = false : array[0].checked = true
+        
       }
 
-      let checkbox = 'checkbox-' + id
-      let array = this.$refs[checkbox]
-      value === '1' ? array[0].checked = false : array[0].checked = true
     }
   },
   mounted() {

@@ -55,7 +55,7 @@ class RegisterController extends Controller
         $data['email'] = ucfirst($data['email']);
 
         return Validator::make($data, [
-            'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç]+$/'],
+            'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
             'lastname' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
             'email' => ['required', 'string', 'unique:admins,email', 'min:8', 'max:100', 'email'],
             'password' => ['required', 'string', 'min:8', 'max:20', 'confirmed', 'regex:/^(?=.*[!@#$])(?=.*[0-9].*[0-9].*[0-9])(?=.*[a-z])(?=.*[A-Z])/'],

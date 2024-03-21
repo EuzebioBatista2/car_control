@@ -90,6 +90,10 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.2 - 🩹 Fixed column name and completed column
+    * Fixed the column name in registers
+    * Fixed complted column during the confirmation
+
 * 1.2.1 - 📝🧪 New function for completed column
     * New function for completed column on review page
     * Updated test coverage
