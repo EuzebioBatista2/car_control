@@ -249,16 +249,16 @@
                           readonly />
                       </div>
 
-                      <!-- Color -->
+                      <!-- Plate -->
                       <div class="mb-3">
                         <div class="d-flex w-100 justify-content-start">
-                          <label for="color"
-                            class="form-label d-inline-flex mx-2 mb-1">Cor:</label>
+                          <label for="plate"
+                            class="form-label d-inline-flex mx-2 mb-1">Placa:</label>
                         </div>
                         <input type="text"
                           class="form-control"
-                          id="color"
-                          :value="vehicle.color"
+                          id="plate"
+                          :value="vehicle.plate"
                           readonly />
                       </div>
 
@@ -269,10 +269,10 @@
                             class="form-label d-inline-flex mx-2 mb-1">Problema(s) encontrado(s):</label>
                         </div>
                         <textarea :class="errors.problems ? 'form-control is-invalid' : 'form-control'"
-                            placeholder="Informe os problemas encontrados"
-                            id="problems"
-                            name="problems"
-                            style="height: 100px"></textarea>
+                          placeholder="Informe os problemas encontrados"
+                          id="problems"
+                          name="problems"
+                          style="height: 100px"></textarea>
                         <span v-if="errors.problems"
                           class="text-danger"
                           style="font-size: 0.875em; font-weight: bolder;">
@@ -294,13 +294,14 @@
             </div>
           </div>
           <div class="card-body table-over">
-            <table v-if="columns && columns.length > 0"
+            <table v-if="reviews.data && Object.keys(reviews.data).length > 0"
               class="table table-dark table-striped table-hover">
               <thead>
                 <tr>
                   <!-- Table columns -->
                   <th v-for="column in columns"
-                    scope="col" :style="column === 'Problemas' ? 'max-width: 400px;' : ''">
+                    scope="col"
+                    :style="column === 'Problemas' ? 'max-width: 400px;' : ''">
                     {{ column }}
                   </th>
                   <th scope="col">Ações</th>
@@ -327,10 +328,12 @@
                         disabled>
                     </span>
                     <span v-else
-                      class="data" style="overflow-wrap: break-word; max-width: 400px;margin: 0px auto;">{{ data }}</span>
+                      class="data"
+                      style="overflow-wrap: break-word; max-width: 400px;margin: 0px auto;">{{ data }}</span>
                   </th>
                   <th>
-                    <a :href="route + '/' + vehicle.id + '/' + review.id" id="button-edit"
+                    <a :href="route + '/' + vehicle.id + '/' + review.id"
+                      id="button-edit"
                       class="btn btn-warning mx-1"><i class="fa-solid fa-pen-to-square"></i></a>
                     <form :action="route + '/' + vehicle.id + '/' + review.id"
                       method="POST"
@@ -345,7 +348,8 @@
                       <input type="hidden"
                         name="_method"
                         value="DELETE">
-                      <button type="submit" id="button-delete"
+                      <button type="submit"
+                        id="button-delete"
                         class="btn btn-danger mx-1">
                         <i class="fa-solid fa-trash">
                         </i></button>
@@ -359,30 +363,29 @@
           </div>
 
           <!-- Paginate -->
-          <div v-if="columns && columns.length > 0"
+          <div v-if="reviews.data && Object.keys(reviews.data).length > 0"
             class="card-footer text-body-secondary container-footer">
-            <nav aria-label="Page navigation">
+            <nav aria-label="Page navigation" class="nav-page">
               <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :href="reviews.first_page_url"
+                <li v-for="page in reviews.links"
+                  :key="page"
+                  class="page-item">
+                  <a v-if="page.label === 'pagination.previous'"
+                    class="page-link bg-dark text-white"
+                    :href="page.url"
                     aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
-                </li>
-                <li v-for="page in reviews.last_page"
-                  :key="page"
-                  class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :class="reviews.links[page].active ? 'navigation-active' : ''"
-                    :href="reviews.path + '?page=' + page">{{ page }}</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :href="reviews.next_page_url"
+                  <a v-else-if="page.label === 'pagination.next'"
+                    class="page-link bg-dark text-white"
+                    :href="page.url"
                     aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
+                  <a v-else
+                    class="page-link bg-dark text-white"
+                    :class="page.active ? 'navigation-active' : ''"
+                    :href="page.url">{{ page.label }}</a>
                 </li>
               </ul>
             </nav>
@@ -503,9 +506,14 @@ h2 {
   width: 200px;
   min-width: 200px;
 }
+
 .add-button {
   display: flex;
   justify-content: end;
+}
+
+.nav-page {
+  overflow-x: auto;
 }
 
 .container-footer {

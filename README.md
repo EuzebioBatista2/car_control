@@ -90,6 +90,12 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.0 - 🩹📝🧪 Test coverage and pages fix/update 
+    * Fixed the pagination in the table
+    * Finished the first test coverage
+    * Fixed bugs and errors on controllers
+    * Create new factories 
+
 * 1.1.2 - 🧪 New API test 
     * Refactoring the vehicle_data controller for the test
 

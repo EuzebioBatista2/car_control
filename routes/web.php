@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
     Route::get('/vehicles/search', [VehiclesController::class, 'search'])->name('search_vehicles');
     Route::get('/vehicles/search_owner/{id}', [VehiclesController::class, 'search_owner'])->name('search_customer_vehicles');
-    Route::get('/vehicles/{id}', [VehiclesController::class, 'index_owner'])->name('owner');
+    Route::get('/vehicles/{id}', [VehiclesController::class, 'index_owner'])->name('owner_vehicle');
     Route::post('/vehicles/{id}', [VehiclesController::class, 'create'])->name('create_vehicles');
     Route::get('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'edit'])->name('edit_vehicles');
     Route::put('/vehicles/{id_customer}/{id_vehicle}', [VehiclesController::class, 'update'])->name('update_vehicles');

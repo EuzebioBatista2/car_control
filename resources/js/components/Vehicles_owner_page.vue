@@ -372,28 +372,24 @@
           <!-- Paginate -->
           <div v-if="vehicles.data && Object.keys(vehicles.data).length > 0"
             class="card-footer text-body-secondary container-footer">
-            <nav aria-label="Page navigation">
+            <nav aria-label="Page navigation" class="nav-page">
               <ul class="pagination">
-                <li class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :href="vehicles.first_page_url"
+                <li v-for="page in vehicles.links"
+                  :key="page"
+                  class="page-item">
+                  <a v-if="page.label === 'pagination.previous'" class="page-link bg-dark text-white"
+                    :href="page.url"
                     aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
-                </li>
-                <li v-for="page in vehicles.last_page"
-                  :key="page"
-                  class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :class="vehicles.links[page].active ? 'navigation-active' : ''"
-                    :href="vehicles.path + '?page=' + page">{{ page }}</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link bg-dark text-white"
-                    :href="vehicles.next_page_url"
+                  <a v-else-if="page.label === 'pagination.next'" class="page-link bg-dark text-white"
+                    :href="page.url"
                     aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
+                  <a v-else class="page-link bg-dark text-white"
+                    :class="page.active ? 'navigation-active' : ''"
+                    :href="page.url">{{ page.label }}</a>
                 </li>
               </ul>
             </nav>
@@ -594,6 +590,10 @@ h2 {
 .add-button {
   display: flex;
   justify-content: end;
+}
+
+.nav-page {
+  overflow-x: auto;
 }
 
 .container-footer {

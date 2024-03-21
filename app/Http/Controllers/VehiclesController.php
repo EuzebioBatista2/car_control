@@ -32,7 +32,7 @@ class VehiclesController extends Controller
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
-            ->orderBy('vehicles.id', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(10);
 
         $columns = [];
 
@@ -73,11 +73,14 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id")
             ->where('admins.id', "$this->auth_user")
-            ->first()
-            ->getAttributes();
+            ->first();
 
-        /* If the customer ID is different from the id  */
-        if ($customer && $customer['id'] != $id) {
+        if ($customer) {
+            $customer->getAttributes();
+        }
+
+        /* If the Customer ID isn't from the user  */
+        if ($customer === null) {
             return view('access_denied');
         }
 
@@ -87,7 +90,7 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
-            ->orderBy('vehicles.id', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(10);
 
         $columns = [];
 
@@ -185,7 +188,7 @@ class VehiclesController extends Controller
 
         Alert::success('Sucesso', 'Cadastro de veículo realizado com sucesso.')->persistent(true, true);
 
-        return redirect()->route('owner', ['id' => $id]);
+        return redirect()->route('owner_vehicle', ['id' => $id]);
     }
 
     public function edit($id_customer, $id_vehicle)
@@ -193,9 +196,14 @@ class VehiclesController extends Controller
 
         $this->auth_user = auth()->user()->id;
 
+        /* Verify if the id_vehicle is integer. */
+        if (!(intval($id_vehicle) == $id_vehicle)) {
+            return redirect()->route('owner_vehicle', ['id' => $id_customer]);
+        }
+
         /* Verify if the id_customer is integer. */
         if (!(intval($id_customer) == $id_customer)) {
-            return redirect()->route('owner', ['id' => $id_customer]);
+            return redirect()->route('vehicles');
         }
 
         /* Query the first customer by id_customer */
@@ -203,11 +211,14 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
             ->where('admins.id', "$this->auth_user")
-            ->first()
-            ->getAttributes();
+            ->first();
 
-        /* If the customer ID is different from the id_customer  */
-        if ($customer && $customer['id'] != $id_customer) {
+        if ($customer) {
+            $customer->getAttributes();
+        }
+
+        /* If the Customer ID isn't from the user  */
+        if ($customer === null) {
             return view('access_denied');
         }
 
@@ -225,6 +236,7 @@ class VehiclesController extends Controller
             return view('edit_vehicle', ['vehicle' => $vehicle_data, 'customer' => $customer]);
         }
 
+        /* If the Vehicle ID isn't from the user  */
         return view('access_denied');
     }
 
@@ -237,7 +249,7 @@ class VehiclesController extends Controller
 
         /* Is the ID integer? */
         if (!(intval($id_customer) == $id_customer)) {
-            return redirect()->route('owner', ['id' => $id_customer]);
+            return redirect()->route('owner_vehicle', ['id' => $id_customer]);
         }
 
         /* Query the first customer with the user ID and the id_customer. */
@@ -245,11 +257,14 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
             ->where('admins.id', "$this->auth_user")
-            ->first()
-            ->getAttributes();
+            ->first();
 
-        /* If the customer ID is different from the id_customer */
-        if ($customer && $customer['id'] != $id_customer) {
+        if ($customer) {
+            $customer->getAttributes();
+        }
+
+        /* If the Customer ID isn't from the user  */
+        if ($customer === null) {
             return view('access_denied');
         }
 
@@ -268,7 +283,7 @@ class VehiclesController extends Controller
                 $vehicle['type_of_fuel'] === $request->input('type_of_fuel')
             ) {
                 Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
-                return redirect()->route('owner', ['id' => $id_customer]);
+                return redirect()->route('owner_vehicle', ['id' => $id_customer]);
             }
 
             /* Format plate */
@@ -289,7 +304,7 @@ class VehiclesController extends Controller
 
         Alert::success('Sucesso', 'Cadastro de cliente atualizado com sucesso!')->persistent(true, true);
 
-        return redirect()->route('owner', ['id' => $id_customer]);
+        return redirect()->route('owner_vehicle', ['id' => $id_customer]);
     }
 
     public function destroy($id_customer, $id_vehicle)
@@ -299,7 +314,7 @@ class VehiclesController extends Controller
 
         /* Is the ID integer? */
         if (!(intval($id_customer) == $id_customer)) {
-            return redirect()->route('owner', ['id' => $id_customer]);
+            return redirect()->route('owner_vehicle', ['id' => $id_customer]);
         }
 
         /* Query the first customer with the user ID and the customer ID. */
@@ -307,11 +322,14 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id_customer")
             ->where('admins.id', "$this->auth_user")
-            ->first()
-            ->getAttributes();
+            ->first();
 
-        /* If the customer ID is different from the id_customer  */
-        if ($customer && $customer['id'] != $id_customer) {
+        if ($customer) {
+            $customer->getAttributes();
+        }
+
+        /* If the Customer ID isn't from the user  */
+        if ($customer === null) {
             return view('access_denied');
         }
 
@@ -324,7 +342,7 @@ class VehiclesController extends Controller
 
         if ($reviews > 0) {
             Alert::error('Erro', 'Cadastro de veículo possui um ou mais revisão(ões) cadastrada(s)!')->persistent(true, true);
-            return redirect()->route('owner', ['id' => $id_customer]);
+            return redirect()->route('owner_vehicle', ['id' => $id_customer]);
         }
 
         $vehicle = Vehicles::where('id', $id_vehicle)->first();
@@ -336,7 +354,7 @@ class VehiclesController extends Controller
             Alert::error('Erro', 'Infelizmente não foi possivel excluir o registro selecionado.')->persistent(true, true);
         }
 
-        return redirect()->route('owner', ['id' => $id_customer]);
+        return redirect()->route('owner_vehicle', ['id' => $id_customer]);
     }
 
     public function search(Request $request)
@@ -366,7 +384,7 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
             ->where("$query_select", "ilike", '%' . $data . '%')
-            ->orderBy('vehicles.id', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(10);
 
         $columns = [];
 
@@ -416,11 +434,14 @@ class VehiclesController extends Controller
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.id', "$id")
             ->where('admins.id', "$this->auth_user")
-            ->first()
-            ->getAttributes();
+            ->first();
 
-        /* If the customer ID is different from the id */
-        if ($customer && $customer['id'] != $id) {
+        if ($customer) {
+            $customer->getAttributes();
+        }
+
+        /* If the Customer ID isn't from the user  */
+        if ($customer === null) {
             return view('access_denied');
         }
 
@@ -433,7 +454,7 @@ class VehiclesController extends Controller
             ->where('customers.admin_id', "$this->auth_user")
             ->where('vehicles.customer_id', "$id")
             ->where("$query_select", "ilike", '%' . $data . '%')
-            ->orderBy('vehicles.id', 'asc')->paginate(5);
+            ->orderBy('vehicles.id', 'asc')->paginate(10);
 
         $columns = [];
 

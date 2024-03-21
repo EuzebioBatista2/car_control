@@ -28,7 +28,7 @@ class CustomersController extends Controller
         /* Query the last five customers(paginete) with user ID. */
         $customers = Customers::where('admin_id', $this->auth_user)
             ->select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
-            ->orderBy('id', 'asc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(10);
 
         $columns = [];
 
@@ -248,7 +248,7 @@ class CustomersController extends Controller
             ->first()
             ->getAttributes();
 
-        /* Select don't macha the customers_columns */
+        /* Select don't match the customers_columns */
         if (!in_array($select, array_keys($customers_columns))) {
             return view('access_denied');
         }
@@ -257,7 +257,7 @@ class CustomersController extends Controller
         $customers = Customers::where('admin_id', $this->auth_user)
             ->where("$select", "ilike", '%' . $data . '%')
             ->select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
-            ->orderBy('id', 'asc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(10);
 
         $columns = [];
 

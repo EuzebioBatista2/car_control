@@ -186,10 +186,7 @@ class PdfController extends Controller
                 if ($translated_column !== "messages.$column") {
                     /* If the traduce exists, replace the column name with formatted name. */
                     $vehicles_columns[$key] = ucfirst($translated_column);
-                } else {
-                    /* If the traduce don't exists, capitalize the first letter of the word. */
-                    $vehicles_columns[$key] = ucfirst($column);
-                }
+                } 
             }
         }
 
@@ -211,9 +208,7 @@ class PdfController extends Controller
                 $translated_column = Lang::get("messages.$column");
                 if ($translated_column !== "messages.$column") {
                     $reviews_columns[$key] = ucfirst($translated_column);
-                } else {
-                    $reviews_columns[$key] = ucfirst($column);
-                }
+                } 
             }
         }
 

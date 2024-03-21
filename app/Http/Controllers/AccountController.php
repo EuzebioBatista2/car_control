@@ -20,17 +20,22 @@ class AccountController extends Controller
         return view('account');
     }
 
-    public function validator_informations(array $data, $id)
+    public function validator_informations(array $data)
     {
+        $user_id = auth()->user()->id;
+
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
 
-        $data['email'] = strtolower($data['email']);
-        $data['email'] = ucfirst($data['email']);
+        if(isset($data['email']))
+        {
+            $data['email'] = strtolower($data['email']);
+            $data['email'] = ucfirst($data['email']);
+        }
 
         return Validator::make($data, [
-            'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç]+$/'],
+            'name' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
             'lastname' => ['required', 'string', 'min:3', 'max:45', 'regex:/^[A-Za-zãáàéèêíìóòôõúùûüç ]+$/'],
-            'email' => ['required', 'string', 'min:8', 'max:100', 'email', Rule::unique('admins')->ignore($id)],
+            'email' => ['required', 'string', 'min:8', 'max:100', 'email', Rule::unique('admins')->ignore($user_id)],
         ], [
             /* Name */
             'name.required' => 'O campo nome deve ser preenchido.',
@@ -57,7 +62,7 @@ class AccountController extends Controller
         ]);
     }
 
-    protected function validator_password(array $data)
+    public function validator_password(array $data)
     {
         Alert::error('Erro', 'Um ou mais campos apresentam erro(s). Por favor, corrija os campos destacados.')->persistent(true, true);
 
@@ -98,26 +103,22 @@ class AccountController extends Controller
         /* Query the admin by id */
         $admin = Admins::where('id', $user_id)->first();
 
-        if ($admin) {
-            if (
-                $admin['name'] === ucfirst($capitalize_name) &&
-                $admin['lastname'] === ucwords($capitalize_lastname) &&
-                $admin['email'] === ucfirst($capitalize_email)
-            ) {
-                Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
-                return redirect()->route('account');
-            }
-
-            $this->validator_informations($request->all(), $user_id)->validate();
-
-            $admin->update([
-                'name' => ucfirst($capitalize_name),
-                'lastname' => ucwords($capitalize_lastname),
-                'email' => ucfirst($capitalize_email)
-            ]);
-        } else {
-            return view('access_denied');
+        if (
+            $admin['name'] === ucfirst($capitalize_name) &&
+            $admin['lastname'] === ucwords($capitalize_lastname) &&
+            $admin['email'] === ucfirst($capitalize_email)
+        ) {
+            Alert::warning('Aviso', 'Prencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
+            return redirect()->route('account');
         }
+
+        $this->validator_informations($request->all())->validate();
+
+        $admin->update([
+            'name' => ucfirst($capitalize_name),
+            'lastname' => ucwords($capitalize_lastname),
+            'email' => ucfirst($capitalize_email)
+        ]);
 
         Alert::success('Sucesso', 'Dados de administrador atualizado com sucesso!')->persistent(true, true);
 
@@ -139,14 +140,9 @@ class AccountController extends Controller
             return redirect()->route('account');
         }
 
-        /* Login exist? */
-        if ($admin) {
-            $admin->update([
-                'password' => Hash::make($request->input('password'))
-            ]);
-        } else {
-            return view('access_denied');
-        }
+        $admin->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
 
         Alert::success('Sucesso', 'Senha de administrador atualizado com sucesso!')->persistent(true, true);
 
