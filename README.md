@@ -30,8 +30,9 @@ Este projeto representa meu trabalho pessoal em um sistema de controle de veícu
 
 ## Hospedagem
 
-> Plataforma(railway)
-- [Primeira versão](https://carcontrol-production.up.railway.app)
+> Plataforma: https://railway.app
+
+- [Car control](https://carcontrol-production.up.railway.app)
 
 ## Instalação
 
@@ -90,6 +91,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 <p align="center"><img src="./public/project/Page_four.png" alt="Página de celular"></p>
 
 ## Atualizações
+
+* 1.3.2 - 📝 Edit Readme
+    * Edit Readme
 
 * 1.3.1 - 🩹 Fix database query
     * Fix database query in customers, vehicles and reviews
