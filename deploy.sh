@@ -12,6 +12,7 @@ if [[ "${!ENV_VAR_NAME}" = "true" ]]; then
 fi
 
 # Build assets using NPM
+npm install
 npm run build
 
 # Clear cache

@@ -90,6 +90,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.4 - 📝 Update deploy file
+    * Update deploy file
+
 * 1.2.3 - 📝 Add deploy file
     * Deploy file
 
