@@ -30,7 +30,8 @@ Este projeto representa meu trabalho pessoal em um sistema de controle de veícu
 
 ## Hospedagem
 
-- Em breve
+> Plataforma(railway)
+- [Primeira versão](https://carcontrol-production.up.railway.app)
 
 ## Instalação
 
@@ -89,6 +90,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 <p align="center"><img src="./public/project/Page_four.png" alt="Página de celular"></p>
 
 ## Atualizações
+
+* 1.3.0 - ✨ First deploy version
+    * First deploy version
 
 * 1.2.6 - 🩹 Fix errors
     * Fix errors

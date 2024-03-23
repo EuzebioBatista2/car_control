@@ -13,6 +13,7 @@ fi
 
 # Build assets using NPM
 composer install
+composer update
 npm install
 npm run build
 
