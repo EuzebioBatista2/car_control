@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customers;
 use App\Models\Reviews;
 use App\Models\Vehicles;
 use DateTime;
@@ -38,15 +37,10 @@ class ReviewsController extends Controller
 
         $columns = [];
 
-        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.plate', 'reviews.date_review', 'reviews.problems')
-            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $reviews_columns = ['id', 'name', 'brand', 'model', 'year', 'plate', 'date_review', 'problems'];
 
         /* Columns table */
-        $columns_query = array_keys($reviews_columns);
+        $columns_query = array_values($reviews_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -102,14 +96,9 @@ class ReviewsController extends Controller
         /* Table columns. */
         $columns = [];
 
-        $reviews_columns = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
-            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $reviews_columns = ['id', 'date_review', 'problems', 'completed'];
 
-        $columns_query = array_keys($reviews_columns);
+        $columns_query = array_values($reviews_columns);
 
         foreach ($columns_query as $key => $column) {
             $translated_column = Lang::get("messages.$column");
@@ -304,7 +293,6 @@ class ReviewsController extends Controller
             'completed' => $value,
         ]);
 
-        /* return redirect()->route('owner_review', ['id' => $vehicle_id]); */
     }
 
     public function destroy($id_vehicle, $id_review)
@@ -377,15 +365,10 @@ class ReviewsController extends Controller
 
         $this->auth_user = auth()->user()->id;
 
-        $reviews_columns = Reviews::select('reviews.id', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'reviews.date_review', 'reviews.problems')
-            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $reviews_columns = ['id', 'name', 'brand', 'model', 'year', 'color', 'date_review', 'problems'];
 
         /* Select don't match the customers_columns */
-        if (!in_array($select, array_keys($reviews_columns))) {
+        if (!in_array($select, array_values($reviews_columns))) {
             return view('access_denied');
         }
 
@@ -409,7 +392,7 @@ class ReviewsController extends Controller
         $columns = [];
 
         /* Table columns */
-        $columns_query = array_keys($reviews_columns);
+        $columns_query = array_values($reviews_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -480,14 +463,9 @@ class ReviewsController extends Controller
 
         $columns = [];
 
-        $reviews_columns = Reviews::select('reviews.id', 'reviews.date_review', 'reviews.problems', 'reviews.completed')
-            ->leftJoin('vehicles', 'reviews.vehicle_id', '=', "vehicles.id")
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $reviews_columns = ['id', 'date_review', 'problems', 'completed'];
 
-        $columns_query = array_keys($reviews_columns);
+        $columns_query = array_values($reviews_columns);
 
         foreach ($columns_query as $key => $column) {
             $translated_column = Lang::get("messages.$column");

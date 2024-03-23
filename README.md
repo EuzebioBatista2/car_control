@@ -91,6 +91,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.3.1 - 🩹 Fix database query
+    * Fix database query in customers, vehicles and reviews
+
 * 1.3.0 - ✨ First deploy version
     * First deploy version
 

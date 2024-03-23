@@ -32,12 +32,10 @@ class CustomersController extends Controller
 
         $columns = [];
 
-        $customers_columns = Customers::select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
-            ->first()
-            ->getAttributes();
+        $customers_columns = ['id', 'name', 'lastname', 'email', 'phone', 'age', 'gender'];
 
         /* Columns table */
-        $columns_query = array_keys($customers_columns);
+        $columns_query = array_values($customers_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -244,12 +242,10 @@ class CustomersController extends Controller
         $this->auth_user = auth()->user()->id;
 
         /* Table columns */
-        $customers_columns = Customers::select('id', 'name', 'lastname', 'email', 'phone', 'age', 'gender')
-            ->first()
-            ->getAttributes();
+        $customers_columns = ['id', 'name', 'lastname', 'email', 'phone', 'age', 'gender'];
 
         /* Select don't match the customers_columns */
-        if (!in_array($select, array_keys($customers_columns))) {
+        if (!in_array($select, array_values($customers_columns))) {
             return view('access_denied');
         }
 
@@ -262,7 +258,7 @@ class CustomersController extends Controller
         $columns = [];
 
         /* Columns table */
-        $columns_query = array_keys($customers_columns);
+        $columns_query = array_values($customers_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");

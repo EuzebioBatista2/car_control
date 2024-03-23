@@ -36,14 +36,10 @@ class VehiclesController extends Controller
 
         $columns = [];
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'customers.name', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system')
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $vehicles_columns = ['id', 'name', 'plate', 'brand', 'model', 'year', 'color', 'steering_system'];
 
         /* Columns table */
-        $columns_query = array_keys($vehicles_columns);
+        $columns_query = array_values($vehicles_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -95,14 +91,10 @@ class VehiclesController extends Controller
         $columns = [];
 
         /* Columns table */
-        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $vehicles_columns = ['id', 'plate', 'brand', 'model', 'year', 'color', 'steering_system', 'type_of_fuel'];
 
         /* Columns table */
-        $columns_query = array_keys($vehicles_columns);
+        $columns_query = array_values($vehicles_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -365,14 +357,10 @@ class VehiclesController extends Controller
 
         $this->auth_user = auth()->user()->id;
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'customers.name', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system')
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $vehicles_columns = ['id', 'plate', 'name', 'brand', 'model', 'year', 'color', 'steering_system'];
 
         /* Select don't macha the customers_columns */
-        if (!in_array($select, array_keys($vehicles_columns))) {
+        if (!in_array($select, array_values($vehicles_columns))) {
             return view('access_denied');
         }
 
@@ -389,7 +377,7 @@ class VehiclesController extends Controller
         $columns = [];
 
         /* Table columns */
-        $columns_query = array_keys($vehicles_columns);
+        $columns_query = array_values($vehicles_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
@@ -418,14 +406,10 @@ class VehiclesController extends Controller
             return redirect()->route('vehicles');
         }
 
-        $vehicles_columns = Vehicles::select('vehicles.id', 'vehicles.plate', 'vehicles.brand', 'vehicles.model', 'vehicles.year', 'vehicles.color', 'vehicles.steering_system', 'vehicles.type_of_fuel')
-            ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
-            ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
-            ->first()
-            ->getAttributes();
+        $vehicles_columns = ['id', 'plate', 'brand', 'model', 'year', 'color', 'steering_system', 'type_of_fuel'];
 
         /* Select don't macha the customers_columns */
-        if (!in_array($select, array_keys($vehicles_columns))) {
+        if (!in_array($select, array_values($vehicles_columns))) {
             return view('access_denied');
         }
 
@@ -459,7 +443,7 @@ class VehiclesController extends Controller
         $columns = [];
 
         /* Table columns */
-        $columns_query = array_keys($vehicles_columns);
+        $columns_query = array_values($vehicles_columns);
 
         foreach ($columns_query as $column) {
             $translated_column = Lang::get("messages.$column");
