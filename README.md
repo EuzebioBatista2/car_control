@@ -90,6 +90,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.3 - 📝 Add deploy file
+    * Deploy file
+
 * 1.2.2 - 🩹 Fixed column name and completed column
     * Fixed the column name in registers
     * Fixed complted column during the confirmation
