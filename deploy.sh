@@ -12,7 +12,7 @@ if [[ "${!ENV_VAR_NAME}" = "true" ]]; then
 fi
 
 # Build assets using NPM
-compose install
+composer install
 npm install
 npm run build
 

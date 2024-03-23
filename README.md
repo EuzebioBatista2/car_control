@@ -90,6 +90,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.2.6 - 🩹 Fix errors
+    * Fix errors
+
 * 1.2.6 - 📝 Update service file
     * Update service file
 

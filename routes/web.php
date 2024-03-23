@@ -29,12 +29,12 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 /* Login page */
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login_post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 /* Register page */
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::post('/register', [RegisterController::class, 'register'])->name('register_post');
 /* Auth pages */
 Route::middleware(['auth'])->group(function () {
 
@@ -50,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
     /* Customers route */
     Route::get('/customers', [CustomersController::class, 'index'])->name('customers');
     Route::get('/customers/search', [CustomersController::class, 'search'])->name('search_customers');
-    Route::post('/customers', [CustomersController::class, 'create'])->name('customers');
+    Route::post('/customers', [CustomersController::class, 'create'])->name('customers_post');
     Route::get('/customers/{id}', [CustomersController::class, 'edit'])->name('edit_customer');
     Route::put('/customers/{id}', [CustomersController::class, 'update'])->name('update_customer');
     Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->name('delete_customer');
