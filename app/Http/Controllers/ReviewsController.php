@@ -33,7 +33,7 @@ class ReviewsController extends Controller
             ->leftJoin('customers', 'vehicles.customer_id', '=', 'customers.id')
             ->leftJoin('admins', 'customers.admin_id', '=', "admins.id")
             ->where('customers.admin_id', "$this->auth_user")
-            ->orderBy('name', 'asc')->paginate(10);
+            ->orderBy('id', 'asc')->paginate(10);
 
         $columns = [];
 

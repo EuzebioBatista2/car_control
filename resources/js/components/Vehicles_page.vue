@@ -58,14 +58,35 @@
               <tbody>
                 <!-- Table data -->
                 <tr v-for="vehicle in vehicles.data">
-                  <th v-for="data in vehicle"
-                    scope="row">
-                    <span v-if="vehicle.customer_id !== data"
-                      class="data">{{ data }}</span>
-                    <a v-else
-                      :href="route + '/' + data"
+                  <td scope="row">
+                    <span class="data">{{ vehicle.id }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.name }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.plate }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.brand }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.model }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.year }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.color }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ vehicle.steering_system }}</span>
+                  </td>
+                  <td scope="row">
+                    <a
+                      :href="route + '/' + vehicle.customer_id"
                       class="btn btn-primary">Veículos</a>
-                  </th>
+                  </td>
                 </tr>
               </tbody>
             </table>

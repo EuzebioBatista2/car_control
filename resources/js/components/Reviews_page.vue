@@ -63,26 +63,50 @@
               <tbody>
                 <!-- Table data -->
                 <tr v-for="review in reviews.data">
-                  <th v-for="data in review"
-                    scope="row">
-                    <span v-if="is_date(data)"
-                      class="data">{{ format_date(data) }}</span>
-                    <span v-else-if="data === '1'"
+                  <td scope="row">
+                    <span class="data">{{ review.id }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ review.name }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ review.brand }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ review.model }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ review.year }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ review.plate }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data">{{ format_date(review.date_review) }}</span>
+                  </td>
+                  <td scope="row">
+                    <span class="data" style="overflow-wrap: break-word; max-width: 600px;margin: 0px auto;">{{ review.problems }}</span>
+                  </td>
+                  <td scope="row">
+                    <span v-if="review.completed === '1'"
                       class="data">
                       <input type="checkbox"
                         class="form-check-input"
                         checked
                         disabled>
                     </span>
-                    <span v-else-if="data === '0'"
+                    <span v-else-if="review.completed === '0'"
                       class="data">
                       <input type="checkbox"
                         class="form-check-input"
                         disabled>
                     </span>
-                    <span v-else-if="review.vehicle_id !== data" class="data" style="overflow-wrap: break-word; max-width: 600px;margin: 0px auto;">{{ data }}</span>
-                    <a v-else :href="route + '/' + data" class="btn btn-primary">Revisão</a>  
-                  </th>
+                  </td>
+                  <td scope="row">
+                    <a
+                      :href="route + '/' + review.vehicle_id"
+                      class="btn btn-primary">Revisão</a>
+                  </td>
                 </tr>
               </tbody>
             </table>
