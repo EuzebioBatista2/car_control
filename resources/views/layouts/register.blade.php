@@ -36,7 +36,7 @@
       </div>
 
       <div class="col-md-12 col-lg-7 background-auth-register">
-        <div class="backgroud-dark">
+        <div class="backgroud-dark-register">
           <h4 class="contact-title">Conheça mais sobre meus projetos</h4>
           <nav class="contact-link">
             <a href="https://www.linkedin.com/in/euzebio-batista/" class="btn btn-light btn-lg">

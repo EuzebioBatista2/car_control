@@ -92,6 +92,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.3.4 - 🩹 Fix rotate
+    * Fix rotate in login, register and menu-nav.
+
 * 1.3.3 - 📝 Update tables
     * Update tables
 

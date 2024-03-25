@@ -32,7 +32,7 @@
   <div id="app" class="container-fluid">
     <main class="row container-auth-login">
       <div class="col-md-12 col-lg-7 background-auth-login">
-        <div class="backgroud-dark">
+        <div class="backgroud-dark-login">
           <h4 class="contact-title">Conheça mais sobre meus projetos</h4>
           <nav class="contact-link">
             <a href="https://www.linkedin.com/in/euzebio-batista/" class="btn btn-light btn-lg">
