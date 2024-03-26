@@ -104,7 +104,7 @@ class AccountController extends Controller
         $admin = Admins::where('id', $user_id)->first();
 
         if (
-            $admin['name'] === ucfirst($capitalize_name) &&
+            $admin['name'] === ucwords($capitalize_name) &&
             $admin['lastname'] === ucwords($capitalize_lastname) &&
             $admin['email'] === ucfirst($capitalize_email)
         ) {
@@ -115,7 +115,7 @@ class AccountController extends Controller
         $this->validator_informations($request->all())->validate();
 
         $admin->update([
-            'name' => ucfirst($capitalize_name),
+            'name' => ucwords($capitalize_name),
             'lastname' => ucwords($capitalize_lastname),
             'email' => ucfirst($capitalize_email)
         ]);

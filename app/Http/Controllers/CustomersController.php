@@ -118,7 +118,7 @@ class CustomersController extends Controller
         $capitalize_email = strtolower($request->input('email'));
 
         Customers::create([
-            'name' => ucfirst($capitalize_name),
+            'name' => ucwords($capitalize_name),
             'lastname' => ucwords($capitalize_lastname),
             'email' => ucfirst($capitalize_email),
             'phone' => $request->input('phone'),
@@ -175,7 +175,7 @@ class CustomersController extends Controller
         /* Customer exist? And the data isn't new? */
         if ($customer) {
             if (
-                $customer['name'] === ucfirst($capitalize_name) &&
+                $customer['name'] === ucwords($capitalize_name) &&
                 $customer['lastname'] === ucwords($capitalize_lastname) &&
                 $customer['email'] === ucfirst($capitalize_email) &&
                 $customer['phone'] === $request->input('phone') &&
@@ -187,7 +187,7 @@ class CustomersController extends Controller
             }
 
             $customer->update([
-                'name' => ucfirst($capitalize_name),
+                'name' => ucwords($capitalize_name),
                 'lastname' => ucwords($capitalize_lastname),
                 'email' => ucfirst($capitalize_email),
                 'phone' => $request->input('phone'),

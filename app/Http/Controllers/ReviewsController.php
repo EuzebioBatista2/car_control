@@ -139,7 +139,7 @@ class ReviewsController extends Controller
 
         Reviews::create([
             'vehicle_id' => $request->input('vehicle_id'),
-            'problems' => $request->input('problems'),
+            'problems' => ucfirst($request->input('problems')),
             'date_review' => date('Y-m-d H:i:s'),
             'completed' => '0',
         ]);
@@ -256,7 +256,7 @@ class ReviewsController extends Controller
             if (
                 $review['date_review'] === $request->input('date_review') &&
                 $review['completed'] === $format_completed &&
-                $review['problems'] == $request->input('problems')
+                $review['problems'] == ucfirst($request->input('problems'))
             ) {
                 Alert::warning('Aviso', 'Preencha os campos com novos dados para realizar uma atualização!')->persistent(true, true);
                 return redirect()->route('owner_review', ['id' => $id_vehicle]);
@@ -265,7 +265,7 @@ class ReviewsController extends Controller
             $review->update([
                 'date_review' => $request->input('date_review'),
                 'completed' => $format_completed,
-                'problems' => $request->input('problems'),
+                'problems' => ucfirst($request->input('problems')),
             ]);
         } else {
             return view('access_denied');
