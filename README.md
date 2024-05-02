@@ -30,9 +30,9 @@ Este projeto representa meu trabalho pessoal em um sistema de controle de veícu
 
 ## Hospedagem
 
-> Plataforma: https://railway.app
+> Plataforma: https://infinityfree.com
 
-- [Car control](https://carcontrol-production.up.railway.app)
+- [Car control](https://carcontrol.great-site.net)
 
 ## Instalação
 
@@ -91,6 +91,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 <p align="center"><img src="./public/project/Page_four.png" alt="Página de celular"></p>
 
 ## Atualizações
+
+* 1.3.6 - 🩹 Fix deploy
+    * New deploy.
 
 * 1.3.5 - 🩹 Fix inputs
     * Fix name and problem input.
