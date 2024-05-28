@@ -92,6 +92,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.3.7 - 📝 Delete tests
+    * Deletes tests(Refact languages)
+
 * 1.3.6 - 🩹 Fix deploy
     * New deploy.
 
