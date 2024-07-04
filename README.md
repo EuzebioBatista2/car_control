@@ -92,6 +92,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 
 ## Atualizações
 
+* 1.3.10 - 📝 Compress gifs
+    * Refact images
+
 * 1.3.9 - 📝 Compress images
     * Refact images
 
