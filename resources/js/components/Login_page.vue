@@ -69,7 +69,7 @@
         <p>Ainda não criou sua conta? <a :href="route_register">Clique aqui</a></p>
       </div>
     </div>
-    <img src="/icons/car-solid.png" alt="Icone de carro" class="car-bg">
+    <img src="/icons/car-solid.webp" alt="Icone de carro" class="car-bg">
   </div>
 </template>
 

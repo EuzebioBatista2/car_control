@@ -44,7 +44,7 @@
         <aside class="h-100" id="menu-bar">
           <button id="toggle-button"><i class="fa-solid fa-chevron-left"></i></button>
           <div class="brand-div">
-            <img src="{{ asset("img/Logo.png") }}" alt="Logo de um carro vermelho" class="img-brand-dash">
+            <img src="{{ asset("img/Logo.webp") }}" alt="Logo de um carro vermelho" class="img-brand-dash">
           </div>
           <div class="container-auth">
             <div class="menu-link w-100 principal-link">

@@ -147,7 +147,7 @@
       </div>
     </div>
 
-    <img src="/icons/user-solid.png" alt="Icone de usuário" class="user-bg">
+    <img src="/icons/user-solid.webp" alt="Icone de usuário" class="user-bg">
   </div>
 </template>
 

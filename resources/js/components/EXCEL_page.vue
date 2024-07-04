@@ -14,12 +14,12 @@
       style="padding: 0px 10px;">
       <div class="col-12 px-4"
         id="container-table">
-        <img src="/img/Logo.png"
+        <img src="/img/Logo.webp"
           alt="Confirmando o download"
           height="100"
           width="100"
           ref="logo">
-        <h2><img src="/icons/table-cells-large-solid.png"
+        <h2><img src="/icons/table-cells-large-solid.webp"
             alt="Ícone de tabela"
             class="me-2 d-inline-flex"
             width="28"

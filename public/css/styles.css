@@ -9,7 +9,7 @@
 .background-home {
   display: flex;
   flex-direction: column;
-  background-image: url('../img/background/Home.png');
+  background-image: url('../img/background/Home.webp');
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
@@ -41,7 +41,7 @@ main {
 }
 
 .background-auth-login {
-  background-image: url('../img/background/Login.png');
+  background-image: url('../img/background/Login.webp');
   background-repeat: no-repeat;
   background-size: cover;
   height: 90vh;
@@ -49,7 +49,7 @@ main {
 }
 
 .background-auth-register {
-  background-image: url('../img/background/Register.png');
+  background-image: url('../img/background/Register.webp');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -204,7 +204,7 @@ main {
 #background-box {
   display: flex;
   flex: 1;
-  background-image: url('../img/background/Home.png');
+  background-image: url('../img/background/Home.webp');
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 8px;
@@ -214,7 +214,7 @@ main {
 #background-box-edit {
   display: flex;
   flex: 1;
-  background-image: url('../img/background/Register.png');
+  background-image: url('../img/background/Register.webp');
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 8px;

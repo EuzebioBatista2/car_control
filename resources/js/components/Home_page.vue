@@ -3,7 +3,7 @@
     <div class="row h-100">
       <div class="container-page">
         <div>
-          <img src="img/Logo.png"
+          <img src="img/Logo.webp"
             alt="Logo de carro, vermelho e branco"
             id="logo-img">
         </div>

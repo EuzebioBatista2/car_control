@@ -1,4 +1,4 @@
-<p align="center"><img src="./public/img/Logo.png" width="400" alt="Logo do car control"></p>
+<p align="center"><img src="./public/img/Logo.webp" width="400" alt="Logo do car control"></p>
 
 ## Sobre projeto
 
@@ -91,6 +91,9 @@ curl.cainfo = "C:\caminho\php\php_versão\extras\sslcacert.pem"
 <p align="center"><img src="./public/project/Page_four.png" alt="Página de celular"></p>
 
 ## Atualizações
+
+* 1.3.9 - 📝 Compress images
+    * Refact images
 
 * 1.3.8 - 📝 Untracked coverage
     * Coverage file removed

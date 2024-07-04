@@ -13,7 +13,7 @@
     <div class="row">
       <div class="col-12 px-4"
         id="container-title">
-        <h2><img src="/icons/chart-pie-solid.png"
+        <h2><img src="/icons/chart-pie-solid.webp"
             alt="Ícone do gráfico de pizza"
             class="mx-2 d-inline-flex"
             width="28"
@@ -24,7 +24,7 @@
         style="margin-bottom: 100px;">
         <div class="col-3 value-graph">
           <span class="title-value-graph">
-            <img src="/icons/user-solid.png"
+            <img src="/icons/user-solid.webp"
               alt="Ícone de usuário"
               class="mx-2 d-inline-flex"
               width="18"
@@ -34,7 +34,7 @@
         </div>
         <div class="col-3 value-graph">
           <span class="title-value-graph">
-            <img src="/icons/car-solid.png"
+            <img src="/icons/car-solid.webp"
               alt="Ícone de carro"
               class="mx-2 d-inline-flex"
               width="20"
@@ -44,7 +44,7 @@
         </div>
         <div class="col-3 value-graph">
           <span class="title-value-graph">
-            <img src="/icons/address-book-solid.png"
+            <img src="/icons/address-book-solid.webp"
               alt="Ícone de revisões"
               class="mx-2 d-inline-flex"
               width="20"
@@ -95,7 +95,7 @@
       style="padding: 0px 10px;">
       <div class="col-12 px-4"
         id="container-table">
-        <h2><img src="/icons/table-cells-large-solid.png"
+        <h2><img src="/icons/table-cells-large-solid.webp"
             alt="Ícone de tabela"
             class="me-2 d-inline-flex"
             width="28"
@@ -124,18 +124,18 @@
                   class="th-td text-table-td"
                   scope="row">
                   <span v-if="data === 'M'">
-                    <img src="/icons/mars-solid.png"
+                    <img src="/icons/mars-solid.webp"
                       alt="Ícone de revisões"
                       class="d-inline-flex"
                       width="12"
                       height="14" /></span>
                   <span v-else-if="data === 'F'">
-                    <img src="/icons/venus-solid.png"
+                    <img src="/icons/venus-solid.webp"
                       alt="Ícone de revisões"
                       class="d-inline-flex"
                       width="12"
                       height="14" /></span>
-                  <span v-else-if="data === 'N'"><img src="/icons/transgender-solid.png"
+                  <span v-else-if="data === 'N'"><img src="/icons/transgender-solid.webp"
                       alt="Ícone de revisões"
                       class="d-inline-flex"
                       width="14"
